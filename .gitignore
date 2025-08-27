@@ -116,6 +116,21 @@ dist
 # DynamoDB Local files
 .dynamodb/
 
+# загальне
+.DS_Store
+*.log
+node_modules/
+.vercel/
+
+# фронтенд
+frontend/dist/
+frontend/.env
+frontend/.env.*.local
+
+# бекенд
+backend/.env
+backend/.env.local
+
 # Firebase cache directory
 .firebase/
 
