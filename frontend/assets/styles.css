@@ -1,0 +1,44 @@
+:root {
+    --max: 1100px;
+}
+
+* {
+    box-sizing: border-box
+}
+
+body {
+    margin: 0;
+    font-family: system-ui, Arial, sans-serif
+}
+
+.header {
+    border-bottom: 1px solid #eee
+}
+
+.container {
+    max-width: var(--max);
+    margin: 0 auto;
+    padding: 16px
+}
+
+.nav a {
+    margin-right: 12px;
+    text-decoration: none
+}
+
+.grid {
+    display: grid;
+    gap: 16px;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr))
+}
+
+.card {
+    border: 1px solid #eee;
+    border-radius: 12px;
+    padding: 12px
+}
+
+.badge {
+    font-size: 12px;
+    opacity: .7
+}

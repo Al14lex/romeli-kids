@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Romeli kids — Chłopiec</title>
+    <link rel="stylesheet" href="/style.css" />
+    <script defer src="/ui.js"></script>
+  </head>
+  <body>
+    <!-- Header -->
+    <header class="site-header">
+      <nav class="nav">
+        <a href="index.html" class="nav-link">Dom</a>
+        <div class="logo">
+          <img src="/assets/logo.png" alt="Romeli kids" />
+          <a href="admin.html" class="admin-link">Admin</a>
+        </div>
+        <a href="contact.html" class="nav-link">Kontakt</a>
+      </nav>
+    </header>
+
+    <!-- Hero -->
+    <section class="hero hero--category">
+      <div class="hero-content">
+        <h1 class="hero-title">Wszystko dla chłopców</h1>
+        <p class="hero-subtitle">Znajdź ulubione rzeczy dla swojego malucha</p>
+      </div>
+    </section>
+
+    <!-- Filters -->
+    <section class="filters">
+      <form id="filters-form" class="filters-form">
+        <fieldset class="filter-group">
+          <legend>Typ</legend>
+          <label
+            ><input type="checkbox" name="type" value="kurtka" /> Kurtka</label
+          >
+          <label
+            ><input type="checkbox" name="type" value="bluza" /> Bluza</label
+          >
+          <label
+            ><input type="checkbox" name="type" value="kombinezon" />
+            Kombinezon</label
+          >
+          <label><input type="checkbox" name="type" value="body" /> Body</label>
+          <label
+            ><input type="checkbox" name="type" value="spodnie" />
+            Spodnie</label
+          >
+          <label
+            ><input type="checkbox" name="type" value="koszulka" />
+            Koszulki</label
+          >
+        </fieldset>
+
+        <fieldset class="filter-group">
+          <legend>Sezon</legend>
+          <label
+            ><input type="checkbox" name="season" value="zima" /> Zima</label
+          >
+          <label
+            ><input type="checkbox" name="season" value="wiosna" />
+            Wiosna</label
+          >
+          <label
+            ><input type="checkbox" name="season" value="lato" /> Lato</label
+          >
+          <label
+            ><input type="checkbox" name="season" value="jesien" />
+            Jesień</label
+          >
+        </fieldset>
+
+        <fieldset class="filter-group">
+          <legend>Wiek</legend>
+          <label><input type="checkbox" name="age" value="0-1" /> 0–1 r.</label>
+          <label><input type="checkbox" name="age" value="2-3" /> 2–3 r.</label>
+          <label><input type="checkbox" name="age" value="4-5" /> 4–5 r.</label>
+          <label><input type="checkbox" name="age" value="6-7" /> 6–7 r.</label>
+        </fieldset>
+
+        <button type="button" id="apply-filters" class="btn">Filtruj</button>
+        <button type="reset" id="reset-filters" class="btn btn--ghost">
+          Wyczyść
+        </button>
+      </form>
+    </section>
+
+    <!-- Gallery -->
+    <section class="gallery">
+      <div id="products-grid" class="products-grid" data-gender="boy">
+        <!-- Продукти будуть згенеровані з бекенду через ui.js -->
+        <!-- Приклад картки (можеш лишити 1-2 як мокапи):
+      <article class="product-card" data-sku="RM-0001">
+        <div class="product-image">
+          <img src="/assets/sample-boy.jpg" alt="Bluza — niebieska" />
+          <span class="sku-badge">RM-0001</span>
+        </div>
+        <div class="product-meta">
+          <h3 class="product-title">Bluza — niebieska</h3>
+          <p class="product-size">Rozmiar: 104</p>
+          <p class="product-price">Cena: 59 zł</p>
+        </div>
+      </article>
+      --></div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+      <div class="socials">
+        <a href="#" aria-label="Facebook"
+          ><img src="/assets/facebook.svg" alt="Facebook"
+        /></a>
+        <a href="#" aria-label="Instagram"
+          ><img src="/assets/instagram.svg" alt="Instagram"
+        /></a>
+        <a href="#" aria-label="TikTok"
+          ><img src="/assets/tiktok.svg" alt="TikTok"
+        /></a>
+      </div>
+      <div class="footer-links">
+        <a href="#">Polityka prywatności</a> |
+        <a href="#">Regulamin</a>
+      </div>
+    </footer>
+  </body>
+</html>
