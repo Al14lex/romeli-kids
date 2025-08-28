@@ -11,6 +11,8 @@ export default defineConfig({
         girls: resolve(__dirname, 'girls.html'),
         contact: resolve(__dirname, 'contact.html'),
         admin: resolve(__dirname, 'admin.html'),
+        privasy: resolve(__dirname, 'privacy.html'),
+        terms: resolve(__dirname, 'terms.html'),
       }
     }
   }

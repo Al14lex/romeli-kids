@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Romeli kids — Kontakt</title>
+    <link rel="stylesheet" href="/style.css" />
+  </head>
+  <body>
+    <!-- Header -->
+    <header class="site-header">
+      <nav class="nav">
+        <a href="index.html" class="nav-link">Dom</a>
+        <div class="logo">
+          <img src="/assets/logo.png" alt="Romeli kids" />
+          <a href="admin.html" class="admin-link">Admin</a>
+        </div>
+        <a href="contact.html" class="nav-link">Kontakt</a>
+      </nav>
+    </header>
+
+    <!-- Hero -->
+    <section class="hero">
+      <div class="hero-content">
+        <h1 class="hero-title">
+          Masz pytania, propozycje albo po prostu chcesz życzyć miłego dnia?
+        </h1>
+        <p class="hero-subtitle">Ten formularz poniżej jest właśnie do tego!</p>
+      </div>
+    </section>
+
+    <!-- Contact form -->
+    <section class="contact-form">
+      <h2>W kontakcie</h2>
+      <!-- якщо треба дослівно "на зв'язку" — скажи, заміню на UA -->
+      <form id="contact-form" class="form" novalidate>
+        <!-- Honeypot (anty-spam) -->
+        <input
+          type="text"
+          name="company"
+          class="hidden-field"
+          autocomplete="off"
+        />
+
+        <label for="name">Twoje imię</label>
+        <input type="text" id="name" name="name" required />
+
+        <label for="email">Twój e-mail</label>
+        <input type="email" id="email" name="email" required />
+
+        <label for="phone">Telefon</label>
+        <input type="tel" id="phone" name="phone" required />
+
+        <label for="message">Wiadomość</label>
+        <textarea
+          id="message"
+          name="message"
+          rows="4"
+          required
+          style="resize: none"
+        ></textarea>
+
+        <button type="submit" id="submit-btn" class="btn">Wyślij</button>
+        <div id="status" class="status" aria-live="polite"></div>
+      </form>
+    </section>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+      <div class="socials">
+        <a href="#" aria-label="Facebook"
+          ><img src="/assets/facebook.svg" alt="Facebook"
+        /></a>
+        <a href="#" aria-label="Instagram"
+          ><img src="/assets/instagram.svg" alt="Instagram"
+        /></a>
+        <a href="#" aria-label="TikTok"
+          ><img src="/assets/tiktok.svg" alt="TikTok"
+        /></a>
+      </div>
+      <div class="footer-links">
+        <a href="privacy.html">Polityka prywatności</a> |
+        <a href="terms.html">Regulamin</a>
+      </div>
+    </footer>
+  </body>
+  <script src="/src/js/email.js" type="module" defer></script>
+  <script
+    src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"
+    defer
+  ></script>
+  <script src="/src/js/email.js" type="module" defer></script>
+</html>
