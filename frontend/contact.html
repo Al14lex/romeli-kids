@@ -3,8 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Romeli kids — Kontakt</title>
-    <link rel="stylesheet" href="/style.css" />
+    <title>Romeli_kids — Kontakt</title>
+    <link rel="stylesheet" href="/css/styles.css" />
   </head>
   <body>
     <!-- Header -->
@@ -12,9 +12,10 @@
       <nav class="nav">
         <a href="index.html" class="nav-link">Dom</a>
         <div class="logo">
-          <img src="/assets/logo.png" alt="Romeli kids" />
+          <img src="/assets/logo.png" alt="Romeli_kids" />
           <a href="admin.html" class="admin-link">Admin</a>
         </div>
+        <a href="about.html" class="nav-link">O nas</a>
         <a href="contact.html" class="nav-link">Kontakt</a>
       </nav>
     </header>
@@ -32,16 +33,7 @@
     <!-- Contact form -->
     <section class="contact-form">
       <h2>W kontakcie</h2>
-      <!-- якщо треба дослівно "на зв'язку" — скажи, заміню на UA -->
       <form id="contact-form" class="form" novalidate>
-        <!-- Honeypot (anty-spam) -->
-        <input
-          type="text"
-          name="company"
-          class="hidden-field"
-          autocomplete="off"
-        />
-
         <label for="name">Twoje imię</label>
         <input type="text" id="name" name="name" required />
 
@@ -84,9 +76,8 @@
       </div>
     </footer>
   </body>
-  <script src="/src/js/email.js" type="module" defer></script>
   <script
-    src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"
+    src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"
     defer
   ></script>
   <script src="/src/js/email.js" type="module" defer></script>

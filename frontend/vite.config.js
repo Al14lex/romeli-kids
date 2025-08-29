@@ -10,6 +10,7 @@ export default defineConfig({
         boys: resolve(__dirname, 'boys.html'),
         girls: resolve(__dirname, 'girls.html'),
         contact: resolve(__dirname, 'contact.html'),
+        about: resolve(__dirname, 'about.html'),
         admin: resolve(__dirname, 'admin.html'),
         privasy: resolve(__dirname, 'privacy.html'),
         terms: resolve(__dirname, 'terms.html'),
