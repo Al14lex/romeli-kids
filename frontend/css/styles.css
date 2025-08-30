@@ -1,4 +1,4 @@
-/* ============ ROMELI_KIDS DESIGN TOKENS ============ */
+/* ============ ROMELI_KIDS — CORE TOKENS ============ */
 :root {
     /* Fonts */
     --font-main: "Cormorant Garamond", serif;
@@ -9,21 +9,21 @@
     --clr-ecru: #F9F6F1;
     /* базовий молочний фон */
     --clr-beige: #E8DFD3;
-    /* фон під фото/підкладки */
+    /* поверхні/підкладки */
     --clr-warm-gray: #8D8D8D;
-    /* основний текст/іконки */
+    /* вторинний текст */
     --clr-graphite: #3E3E3E;
-    /* заголовки/лого */
+    /* первинний текст/заголовки */
     --clr-pink: #E3BFC3;
     /* акцент дівчатка */
     --clr-blue: #B8D6E8;
     /* акцент хлопчики */
     --clr-olive: #B6C7A3;
-    /* унісекс акцент */
+    /* акцент унісекс */
     --clr-caramel: #D7A97C;
-    /* кнопки/бейджі NEW */
+    /* акцент/кнопки */
 
-    /* Semantic colors */
+    /* Semantic */
     --text-primary: var(--clr-graphite);
     --text-secondary: var(--clr-warm-gray);
     --bg-body: var(--clr-ecru);
@@ -33,11 +33,11 @@
     --ring: rgba(0, 0, 0, 0.2);
 
     /* Elevation */
-    --shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.06);
-    --shadow-md: 0 6px 16px rgba(0, 0, 0, 0.08);
-    --shadow-lg: 0 10px 24px rgba(0, 0, 0, 0.10);
+    --shadow-sm: 0 2px 6px rgba(0, 0, 0, .06);
+    --shadow-md: 0 6px 16px rgba(0, 0, 0, .08);
+    --shadow-lg: 0 10px 24px rgba(0, 0, 0, .10);
 
-    /* Sizing / spacing scales */
+    /* Radii / Spacing */
     --radius-sm: 8px;
     --radius-md: 14px;
     --radius-lg: 20px;
@@ -49,42 +49,61 @@
     --sp-6: 32px;
     --sp-7: 48px;
 
-    /* Typography (адаптив через clamp) */
-    --fs-xs: clamp(12px, 1.2vw, 14px);
-    --fs-sm: clamp(14px, 1.4vw, 16px);
-    --fs-md: clamp(16px, 1.6vw, 18px);
-    --fs-lg: clamp(18px, 2vw, 22px);
-    --fs-xl: clamp(22px, 3vw, 32px);
-    --fs-xxl: clamp(28px, 4vw, 44px);
+    /* Типографіка (базові розміри) */
+    --fs-xs: 12px;
+    --fs-sm: 14px;
+    --fs-md: 16px;
+    --fs-lg: 18px;
+    --fs-xl: 22px;
+    --fs-xxl: 28px;
 
-    /* Layout bounds */
+    /* Layout */
     --container-max: 1440px;
-    /* верхня межа дизайну */
     --container-pad: 16px;
-    /* внутрішні відступи по краях */
 }
 
-/* ============ GLOBAL RESETS ============ */
+/* ============ GLOBAL RESET ============ */
 *,
 *::before,
 *::after {
     box-sizing: border-box;
 }
 
-html {
-    scroll-behavior: smooth;
+html,
+body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+}
+
+html::-webkit-scrollbar-track,
+body::-webkit-scrollbar-track {
+    width: 0;
+    height: 0;
+    background: transparent;
+}
+
+html::-webkit-scrollbar-thumb,
+body::-webkit-scrollbar-thumb {
+    width: 0;
+    height: 0;
+    background: transparent;
 }
 
 body {
-    margin: 0;
     font-family: var(--font-main);
     font-weight: 400;
     font-size: var(--fs-md);
     line-height: 1.35;
     color: var(--text-primary);
     background: var(--bg-body);
-    text-rendering: optimizeLegibility;
-    -webkit-font-smoothing: antialiased;
 }
 
 img {
@@ -93,12 +112,15 @@ img {
     display: block;
 }
 
-ul {
+/* Списки без маркерів */
+ul,
+ol {
     margin: 0;
     padding: 0;
     list-style: none;
 }
 
+/* Посилання */
 a {
     color: var(--link);
     text-decoration: none;
@@ -108,23 +130,31 @@ a:hover {
     color: var(--link-hover);
 }
 
+/* Доступність */
 :focus-visible {
     outline: 2px solid var(--ring);
     outline-offset: 2px;
     border-radius: 6px;
 }
 
-/* Приховуємо важкі скроллбар-стилі — тримаємо натив */
-html::-webkit-scrollbar {
+/* ============ LOCAL SCROLL ONLY (textarea, .scrollable) ============ */
+textarea,
+.scrollable {
+    overflow-y: auto;
+}
+
+textarea::-webkit-scrollbar,
+.scrollable::-webkit-scrollbar {
     width: 10px;
 }
 
-html::-webkit-scrollbar-thumb {
-    background: rgba(0, 0, 0, 0.15);
+textarea::-webkit-scrollbar-thumb,
+.scrollable::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, .25);
     border-radius: 10px;
 }
 
-/* ============ TYPOGRAPHY ============ */
+/* ============ TYPOGRAPHY BASE ============ */
 h1,
 h2,
 h3,
@@ -155,8 +185,7 @@ p {
     color: var(--text-secondary);
 }
 
-/* ============ LAYOUT ============ */
-/* Контейнер центрує контент і обмежує ширину між 1120–1440 */
+/* ============ LAYOUT CORE ============ */
 .container {
     width: 100%;
     max-width: var(--container-max);
@@ -168,269 +197,10 @@ p {
     padding-block: var(--sp-6);
 }
 
-.section--alt {
-    background: var(--bg-surface);
-}
-
-/* Грід для галереї товарів */
+/* Проста сітка */
 .grid {
     display: grid;
     gap: var(--sp-4);
-}
-
-@media (min-width: 480px) {
-    .grid--cards {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
-@media (min-width: 768px) {
-    .grid--cards {
-        grid-template-columns: repeat(3, 1fr);
-    }
-}
-
-@media (min-width: 1120px) {
-    .grid--cards {
-        grid-template-columns: repeat(4, 1fr);
-    }
-}
-
-/* ============ HEADER / NAV ============ */
-.header {
-    position: sticky;
-    top: 0;
-    z-index: 50;
-    background: rgba(249, 246, 241, 0.85);
-    backdrop-filter: saturate(140%) blur(6px);
-    box-shadow: var(--shadow-sm);
-}
-
-.nav {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: var(--sp-4);
-    padding-block: var(--sp-3);
-}
-
-.nav__logo {
-    font-family: var(--font-secondary);
-    font-size: var(--fs-lg);
-    letter-spacing: 0.02em;
-}
-
-.nav__list {
-    display: flex;
-    gap: var(--sp-4);
-    align-items: center;
-}
-
-.nav__link {
-    padding: 6px 10px;
-    border-radius: 10px;
-}
-
-.nav__link:hover,
-.nav__link.active {
-    background: var(--bg-surface);
-}
-
-/* ============ BUTTONS ============ */
-.btn {
-    appearance: none;
-    border: 0;
-    border-radius: var(--radius-md);
-    padding: 10px 16px;
-    font-family: var(--font-ui);
-    font-size: var(--fs-sm);
-    line-height: 1;
-    cursor: pointer;
-    transition: transform .06s ease, box-shadow .2s ease, background .2s ease, color .2s ease;
-    box-shadow: var(--shadow-sm);
-}
-
-.btn:active {
-    transform: translateY(1px);
-}
-
-.btn:focus-visible {
-    outline: 2px solid var(--ring);
-    outline-offset: 2px;
-}
-
-.btn--primary {
-    background: var(--clr-caramel);
-    color: #2b221a;
-}
-
-.btn--primary:hover {
-    box-shadow: var(--shadow-md);
-}
-
-.btn--girls {
-    background: var(--clr-pink);
-    color: #3b2a2d;
-}
-
-.btn--boys {
-    background: var(--clr-blue);
-    color: #1e2b34;
-}
-
-.btn--unisex {
-    background: var(--clr-olive);
-    color: #233021;
-}
-
-.btn--ghost {
-    background: transparent;
-    border: 1px solid rgba(0, 0, 0, 0.12);
-    color: var(--text-primary);
-}
-
-.btn--ghost:hover {
-    background: var(--bg-surface);
-}
-
-/* ============ BADGES ============ */
-.badge {
-    display: inline-block;
-    padding: 6px 10px;
-    font-size: 12px;
-    border-radius: 999px;
-    line-height: 1;
-}
-
-.badge--new {
-    background: var(--clr-caramel);
-    color: #2b221a;
-}
-
-.badge--girls {
-    background: var(--clr-pink);
-    color: #3b2a2d;
-}
-
-.badge--boys {
-    background: var(--clr-blue);
-    color: #1e2b34;
-}
-
-.badge--unisex {
-    background: var(--clr-olive);
-    color: #233021;
-}
-
-/* ============ CARDS (товари) ============ */
-.card {
-    background: #fff;
-    border-radius: var(--radius-lg);
-    overflow: hidden;
-    box-shadow: var(--shadow-sm);
-    transition: box-shadow .2s ease, transform .06s ease;
-}
-
-.card:hover {
-    box-shadow: var(--shadow-md);
-    transform: translateY(-1px);
-}
-
-.card__img {
-    aspect-ratio: 4/5;
-    object-fit: cover;
-    width: 100%;
-    background: var(--clr-beige);
-}
-
-.card__body {
-    padding: var(--sp-4);
-}
-
-.card__title {
-    font-size: var(--fs-md);
-    color: var(--clr-graphite);
-    margin-bottom: var(--sp-2);
-}
-
-.card__meta {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: var(--sp-3);
-    color: var(--text-secondary);
-    font-size: var(--fs-sm);
-}
-
-.price {
-    font-weight: 600;
-    color: var(--clr-graphite);
-}
-
-.price--accent {
-    color: #7a4f2b;
-}
-
-/* ледь темніше за карамель для ціни */
-
-/* ============ HERO / BANNERS ============ */
-.hero {
-    border-radius: var(--radius-lg);
-    background: linear-gradient(180deg, rgba(232, 223, 211, 0.8) 0%, rgba(249, 246, 241, 0.9) 100%);
-    padding: clamp(24px, 6vw, 64px);
-    box-shadow: var(--shadow-sm);
-}
-
-.hero__title {
-    font-size: var(--fs-xxl);
-    color: var(--clr-graphite);
-}
-
-.hero__text {
-    font-size: var(--fs-md);
-    color: var(--text-secondary);
-    max-width: 60ch;
-}
-
-/* ============ FORMS (контакти/адмін) ============ */
-.input,
-.select,
-.textarea {
-    width: 100%;
-    padding: 12px 14px;
-    border-radius: var(--radius-md);
-    border: 1px solid rgba(0, 0, 0, 0.12);
-    background: #fff;
-    font-family: var(--font-ui);
-    font-size: var(--fs-sm);
-    color: var(--text-primary);
-}
-
-.input::placeholder,
-.textarea::placeholder {
-    color: #9a9a9a;
-}
-
-.textarea {
-    min-height: 120px;
-    resize: vertical;
-}
-
-.input:focus-visible,
-.select:focus-visible,
-.textarea:focus-visible {
-    outline: 2px solid var(--ring);
-    outline-offset: 2px;
-    border-color: rgba(0, 0, 0, 0.25);
-}
-
-/* Помилки форм */
-.form-error {
-    color: #fff;
-    background: #cf5a5a;
-    border-radius: var(--radius-md);
-    padding: 10px 12px;
-    font-size: 14px;
 }
 
 /* ============ UTILITIES ============ */
@@ -458,7 +228,10 @@ p {
     margin-bottom: var(--sp-6);
 }
 
-/* Колірні утиліти для швидкого стилювання елементів */
+.bg-surface {
+    background: var(--bg-surface);
+}
+
 .bg-pink {
     background: var(--clr-pink);
 }
@@ -475,45 +248,7 @@ p {
     background: var(--clr-caramel);
 }
 
-.bg-surface {
-    background: var(--bg-surface);
-}
-
-/* ============ RESPONSIVE BREAKPOINTS ============ */
-/* Планшет: ≥768px (дрібні підсилення типографіки/відступів) */
-@media (min-width: 768px) {
-    .section {
-        padding-block: calc(var(--sp-6) + 8px);
-    }
-
-    .nav__list {
-        gap: var(--sp-5);
-    }
-}
-
-/* Десктоп: від 1120px до 1440px — основний макет */
-@media (min-width: 1120px) {
-    :root {
-        --container-pad: 32px;
-    }
-
-    .section {
-        padding-block: var(--sp-7);
-    }
-
-    .hero {
-        padding: clamp(40px, 5vw, 80px);
-    }
-}
-
-/* Дуже широкі екрани: >1440px — не розтягуємо контент далі 1440 */
-@media (min-width: 1440px) {
-    .container {
-        max-width: var(--container-max);
-    }
-}
-
-/* ============ MOTION PREFERENCES ============ */
+/* ============ MOTION PREFS ============ */
 @media (prefers-reduced-motion: reduce) {
     * {
         transition: none !important;

@@ -4,21 +4,43 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>O nas — Romeli_kids</title>
+    <!--favicon-->
+    <link
+      rel="icon"
+      type="image/png"
+      href="public/favicon/favicon-96x96.png"
+      sizes="96x96"
+    />
+    <link rel="icon" type="image/svg+xml" href="public/favicon/favicon.svg" />
+    <link rel="shortcut icon" href="public/favicon/favicon.ico" />
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="public/favicon/apple-touch-icon.png"
+    />
+    <!--fonts-->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Ephesis&family=Playfair+Display+SC&family=Raleway:wght@500&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/modern-normalize/3.0.1/modern-normalize.min.css"
+      integrity="sha512-q6WgHqiHlKyOqslT/lgBgodhd03Wp4BEqKeW6nNtlOY4quzyG3VoQKFrieaCeSnuVseNKRGpGeDU3qPmabCANg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
     <link rel="stylesheet" href="/css/styles.css" />
   </head>
   <body>
-    <header class="header">
-      <div class="container nav">
-        <a class="nav__logo" href="/">Romeli_kids</a>
-        <nav aria-label="Główna nawigacja">
-          <ul class="nav__list">
-            <li><a class="nav__link" href="/">Dom</a></li>
-            <li><a class="nav__link active" href="/about.html">O nas</a></li>
-            <li><a class="nav__link" href="/contact.html">Kontakt</a></li>
-          </ul>
-        </nav>
-      </div>
-    </header>
+    <!-- Header -->
+    <div id="site-header"></div>
 
     <main>
       <!-- HERO -->
@@ -139,10 +161,8 @@
       </section>
     </main>
 
-    <footer class="section section--alt">
-      <div class="container text-center">
-        <p>&copy; Romeli_kids</p>
-      </div>
-    </footer>
+    <!-- Footer -->
+    <div id="site-footer"></div>
   </body>
+  <script src="js/include.js" type="module" defer></script>
 </html>

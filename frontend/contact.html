@@ -4,21 +4,43 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Romeli_kids — Kontakt</title>
+    <!--favicon-->
+    <link
+      rel="icon"
+      type="image/png"
+      href="public/favicon/favicon-96x96.png"
+      sizes="96x96"
+    />
+    <link rel="icon" type="image/svg+xml" href="public/favicon/favicon.svg" />
+    <link rel="shortcut icon" href="public/favicon/favicon.ico" />
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="public/favicon/apple-touch-icon.png"
+    />
+    <!--fonts-->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Ephesis&family=Playfair+Display+SC&family=Raleway:wght@500&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/modern-normalize/3.0.1/modern-normalize.min.css"
+      integrity="sha512-q6WgHqiHlKyOqslT/lgBgodhd03Wp4BEqKeW6nNtlOY4quzyG3VoQKFrieaCeSnuVseNKRGpGeDU3qPmabCANg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
     <link rel="stylesheet" href="/css/styles.css" />
   </head>
   <body>
     <!-- Header -->
-    <header class="site-header">
-      <nav class="nav">
-        <a href="index.html" class="nav-link">Dom</a>
-        <div class="logo">
-          <img src="/assets/logo.png" alt="Romeli_kids" />
-          <a href="admin.html" class="admin-link">Admin</a>
-        </div>
-        <a href="about.html" class="nav-link">O nas</a>
-        <a href="contact.html" class="nav-link">Kontakt</a>
-      </nav>
-    </header>
+    <div id="site-header"></div>
 
     <!-- Hero -->
     <section class="hero">
@@ -58,27 +80,7 @@
     </section>
 
     <!-- Footer -->
-    <footer class="site-footer">
-      <div class="socials">
-        <a href="#" aria-label="Facebook"
-          ><img src="/assets/facebook.svg" alt="Facebook"
-        /></a>
-        <a href="#" aria-label="Instagram"
-          ><img src="/assets/instagram.svg" alt="Instagram"
-        /></a>
-        <a href="#" aria-label="TikTok"
-          ><img src="/assets/tiktok.svg" alt="TikTok"
-        /></a>
-      </div>
-      <div class="footer-links">
-        <a href="privacy.html">Polityka prywatności</a> |
-        <a href="terms.html">Regulamin</a>
-      </div>
-    </footer>
+    <div id="site-footer"></div>
   </body>
-  <script
-    src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"
-    defer
-  ></script>
-  <script src="/src/js/email.js" type="module" defer></script>
+  <script src="js/include.js" type="module" defer></script>
 </html>
