@@ -1,3 +1,10 @@
+@import './home.css';
+@import './header.css';
+/* @import './footer.css'; */
+/* @import './girl.css'; */
+/* @import './boy.css'; */
+/* @import './contact.css'; */
+
 /* ============ ROMELI_KIDS — CORE TOKENS ============ */
 :root {
     /* Fonts */
@@ -14,13 +21,13 @@
     /* вторинний текст */
     --clr-graphite: #3E3E3E;
     /* первинний текст/заголовки */
-    --clr-pink: #E3BFC3;
+    --clr-pink: #dbb5b3;
     /* акцент дівчатка */
-    --clr-blue: #B8D6E8;
+    --clr-blue: #afc8cd;
     /* акцент хлопчики */
     --clr-olive: #B6C7A3;
     /* акцент унісекс */
-    --clr-caramel: #D7A97C;
+    --clr-caramel: #d4a97f;
     /* акцент/кнопки */
 
     /* Semantic */
@@ -48,14 +55,6 @@
     --sp-5: 24px;
     --sp-6: 32px;
     --sp-7: 48px;
-
-    /* Типографіка (базові розміри) */
-    --fs-xs: 12px;
-    --fs-sm: 14px;
-    --fs-md: 16px;
-    --fs-lg: 18px;
-    --fs-xl: 22px;
-    --fs-xxl: 28px;
 
     /* Layout */
     --container-max: 1440px;
@@ -98,9 +97,11 @@ body::-webkit-scrollbar-thumb {
 }
 
 body {
+    max-width: 1440px;
+    margin: 0 auto;
     font-family: var(--font-main);
     font-weight: 400;
-    font-size: var(--fs-md);
+    font-size: 18px;
     line-height: 1.35;
     color: var(--text-primary);
     background: var(--bg-body);
@@ -161,97 +162,11 @@ h3,
 h4,
 h5,
 h6 {
-    margin: 0 0 var(--sp-3);
+    margin: 0 auto;
     font-family: var(--font-main);
     font-weight: 600;
     line-height: 1.15;
     color: var(--clr-graphite);
-}
-
-h1 {
-    font-size: var(--fs-xxl);
-}
-
-h2 {
-    font-size: var(--fs-xl);
-}
-
-h3 {
-    font-size: var(--fs-lg);
-}
-
-p {
-    margin: 0 0 var(--sp-4);
-    color: var(--text-secondary);
-}
-
-/* ============ LAYOUT CORE ============ */
-.container {
-    width: 100%;
-    max-width: var(--container-max);
-    margin-inline: auto;
-    padding-inline: var(--container-pad);
-}
-
-.section {
-    padding-block: var(--sp-6);
-}
-
-/* Проста сітка */
-.grid {
-    display: grid;
-    gap: var(--sp-4);
-}
-
-/* ============ UTILITIES ============ */
-.text-center {
     text-align: center;
 }
 
-.hide {
-    display: none !important;
-}
-
-.mt-4 {
-    margin-top: var(--sp-4);
-}
-
-.mb-4 {
-    margin-bottom: var(--sp-4);
-}
-
-.mt-6 {
-    margin-top: var(--sp-6);
-}
-
-.mb-6 {
-    margin-bottom: var(--sp-6);
-}
-
-.bg-surface {
-    background: var(--bg-surface);
-}
-
-.bg-pink {
-    background: var(--clr-pink);
-}
-
-.bg-blue {
-    background: var(--clr-blue);
-}
-
-.bg-olive {
-    background: var(--clr-olive);
-}
-
-.bg-caramel {
-    background: var(--clr-caramel);
-}
-
-/* ============ MOTION PREFS ============ */
-@media (prefers-reduced-motion: reduce) {
-    * {
-        transition: none !important;
-        animation: none !important;
-    }
-}
