@@ -1,6 +1,6 @@
 @import './home.css';
 @import './header.css';
-/* @import './footer.css'; */
+@import './footer.css';
 /* @import './girl.css'; */
 /* @import './boy.css'; */
 /* @import './contact.css'; */
@@ -95,9 +95,11 @@ body::-webkit-scrollbar-thumb {
     height: 0;
     background: transparent;
 }
-
-body {
+.container{
     max-width: 1440px;
+    margin: 0 auto;
+}
+body {
     margin: 0 auto;
     font-family: var(--font-main);
     font-weight: 400;

@@ -173,16 +173,31 @@
             padding: 20px;
             border-radius: 10px;
         }
-    
         .category img {
             border-radius: 10px;
-            margin-bottom: 20px;
-        }
-    
+            margin-bottom: 20px;    
+     }
+    .category-desc img{
+        box-shadow: 0 30px 30px 50px #fefaef;
+    }
         .category-name {
             padding: 15px;
             border-radius: 8px;
             font-size: 20px;
         }
 }
-@media screen and (min-width: 1440px) {}
+@media screen and (min-width: 1440px) {
+    /* .category {
+            padding: 25px 25px 98px 25px;
+        }
+                .categories-desc-title{
+                    font-size: 30px;
+                }
+        .category a {
+            height: 450px;
+        }
+
+        .category-name {
+            font-size: 22px;
+        } */
+}

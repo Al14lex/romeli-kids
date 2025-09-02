@@ -1,5 +1,5 @@
 .header {
-    max-width: 1440px;
+    /* max-width: 1440px; */
     margin: 0 auto;
     position: fixed;
     top: 0;
@@ -15,6 +15,9 @@
         align-items: center;
         justify-content: space-around;
         height: 50px;
+        max-width: 1440px;  
+    margin: 0 auto;
+        
 }
 .header-nav-link {
     font-size: 20px;

@@ -1,0 +1,9 @@
+.site-footer{
+    background-color: var(--clr-beige);
+    padding: 30px 0;
+}
+.socials{
+    display: flex;
+    justify-content: center;
+    gap: 50px;
+}
