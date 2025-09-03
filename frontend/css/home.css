@@ -55,7 +55,7 @@
 @media screen and (min-width: 1024px) {
     .hero {
             margin-top: 70px;
-            height: 420px;
+            height: 500px;
         }
     
         .hero-title {
@@ -169,8 +169,8 @@
         margin-bottom: 30px;
     }
         .category {
-            width: 26%;
-            padding: 20px;
+            width: 22%;
+            padding: 25px;
             border-radius: 10px;
         }
         .category img {
@@ -186,18 +186,5 @@
             font-size: 20px;
         }
 }
-@media screen and (min-width: 1440px) {
-    /* .category {
-            padding: 25px 25px 98px 25px;
-        }
-                .categories-desc-title{
-                    font-size: 30px;
-                }
-        .category a {
-            height: 450px;
-        }
-
-        .category-name {
-            font-size: 22px;
-        } */
-}
+/* @media screen and (min-width: 1440px) {
+} */
