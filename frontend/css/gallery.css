@@ -1,0 +1,237 @@
+/* --- Drawer --- */
+.hero-category-girl{
+    background-image: url('/images/hero-home3.jpg');
+}
+.hero-category-boy {
+    background-image: url('/images/hero-home3.jpg');
+}
+.filters-handle {
+    position: fixed;
+    top: 50%;
+    right: 0;
+    transform: translateY(-50%);
+    z-index: 1010;
+    color: var(--clr-graphite, #3E3E3E);
+    border: none;
+    padding: .6rem .9rem;
+    border-radius: 8px 0 0 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, .15);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+}
+.filters-girl{
+    background: var(--clr-pink, #dbb5b3);
+}
+.filters-boy {
+    background: var(--clr-blue, #afc8cd);
+}
+.filters-handle .handle-arrow {
+    display: inline-block;
+    transition: transform .25s ease;
+}
+
+/* контейнер шухляди */
+.filters-drawer {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 60vw;
+    /* 60% ширини екрана */
+    max-width: 560px;
+    /* щоб на великих екранах не було занадто широко */
+    min-width: 320px;
+    background: #e8dfd3;
+    box-shadow: -20px 0 40px rgba(0, 0, 0, .18);
+    transform: translateX(100%);
+    transition: transform .3s ease;
+    z-index: 1020;
+    display: flex;
+    flex-direction: column;
+}
+
+.filters-drawer.is-open {
+    transform: translateX(0);
+}
+
+.filters-drawer__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    
+    padding: 13px 20px;
+    border-bottom: 1px solid rgba(0, 0, 0, .08);
+}
+.filters-drawer__header-girl{
+    background: #d7a9a6;
+}
+.filters-close {
+    background: transparent;
+    border: none;
+    font-size: 1.25rem;
+    cursor: pointer;
+}
+.filters-close:hover {
+    color: #ffffff;
+}
+.filters {
+    padding: 1rem 1.25rem 1.25rem;
+    overflow: hidden;
+}
+
+.filter-group {
+    margin-bottom: 1rem;
+}
+
+.filter-group legend {
+    font-weight: 600;
+    margin-bottom: .5rem;
+    color: var(--clr-graphite, #3E3E3E);
+}
+
+.options-scroll {
+    max-height: 13.3rem;
+    overflow: auto;
+    padding-right: .25rem;
+    border: 1px solid rgba(0, 0, 0, .08);
+    border-radius: 10px;
+    background: #F9F6F1;
+}
+
+.options-scroll label {
+    display: flex;
+    align-items: center;
+    gap: .6rem;
+    padding: .55rem .7rem;
+    border-bottom: 1px solid rgba(0, 0, 0, .05);
+}
+
+.options-scroll label:last-child {
+    border-bottom: none;
+}
+
+.filters-actions {
+    position: sticky;
+    bottom: 0;
+    padding-top: .75rem;
+    justify-content: space-evenly;
+    display: flex;
+}
+.filters-actions .btn {
+    padding: 12px 25px;
+    border-radius: 8px;
+    background-color: #d7a9a6;
+    color: #fff;
+    border: 1px solid #b38988;
+    font-weight: 600;
+    letter-spacing: .2px;
+    transition: transform .1s ease, box-shadow .2s ease, background-color .2s ease;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, .15);
+    cursor: pointer;
+}
+
+.filters-actions .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 22px rgba(0, 0, 0, .18);
+}
+
+.filters-actions .btn:active {
+    transform: translateY(0);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, .16);
+}
+
+.filters-actions .btn:disabled {
+    opacity: .7;
+    cursor: not-allowed;
+}
+/* фон */
+.filters-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, .35);
+    z-index: 1015;
+}
+
+/* коли відкрито — повернути стрілку, показати оверлей */
+.filters-drawer.is-open~.filters-overlay {
+    display: block;
+}
+
+html.drawer-open {
+    overflow: hidden;
+}
+
+/* блокуємо скрол сторінки під час відкриття */
+html.drawer-open .filters-overlay[hidden] {
+    display: block;
+}
+
+html.drawer-open .filters-handle .handle-arrow {
+    transform: rotate(180deg);
+}
+/* Загальний ресет для чекбоксів та радіо */
+input[type="checkbox"],
+input[type="radio"] {
+    appearance: none;
+    /* прибрати дефолтний вигляд */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    width: 15px;
+    height: 15px;
+    border: 1px solid var(--clr-graphite, #3E3E3E);
+    border-radius: 4px;
+    /* для чекбоксу квадрат */
+    background: #fff;
+    cursor: pointer;
+    display: inline-block;
+    position: relative;
+    vertical-align: middle;
+    margin-right: .5rem;
+}
+
+/* Для радіо — зробимо круглими */
+input[type="radio"] {
+    border-radius: 50%;
+}
+
+/* Стан :checked — рожевий фон */
+input[type="checkbox"]:checked,
+input[type="radio"]:checked {
+    background-color: #dbb5b3;
+    border-color: #dbb5b3;
+}
+
+/* Додамо “галочку” для чекбоксу */
+input[type="checkbox"]:checked::after {
+    content: "✔";
+    color: #fff;
+    font-size: 12px;
+    position: absolute;
+    top: 0;
+    left: 2px;
+    line-height: 15px;
+}
+
+/* Біла крапка всередині для радіо */
+input[type="radio"]:checked::after {
+    content: "";
+    width: 8px;
+    height: 8px;
+    background: #fff;
+    border-radius: 50%;
+    position: absolute;
+    top: 3px;
+    left: 3px;
+}
+/* дрібний тюнінг на дуже вузьких екранах */
+@media (max-width: 480px) {
+    .filters-drawer {
+        width: 88vw;
+    }
+}
+
+.product-card{
+    background-color: #E8DFD3;
+}

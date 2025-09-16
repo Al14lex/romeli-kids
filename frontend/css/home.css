@@ -11,6 +11,7 @@
         z-index: 1;
         justify-content: center;
         align-items: center;
+        padding: 0 20px;
 }
 .hero-background{
     background-image: url('/images/hero-home3.jpg');

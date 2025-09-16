@@ -1,7 +1,7 @@
 
 document.addEventListener("DOMContentLoaded", () => {
   emailjs.init({ publicKey: "FysG0eYMG0GLg6F8M" });
-
+console.log("working")
   const form = document.getElementById("contact-form");
   const btn = document.getElementById("submit-btn");
   const status = document.getElementById("status");

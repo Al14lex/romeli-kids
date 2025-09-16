@@ -43,93 +43,296 @@
     <div id="site-header"></div>
 
     <!-- Hero -->
-    <section class="hero hero--category">
+    <section class="hero hero-category-girl">
       <div class="hero-content">
-        <h1 class="hero-title">Wszystko dla dziewczynek</h1>
-        <p class="hero-subtitle">Delikatne i wygodne rzeczy na każdy dzień</p>
+        <h3 class="hero-title">
+          Wszystko dla dziewczynek <br />
+          Delikatne i wygodne rzeczy na każdy dzień
+        </h3>
       </div>
     </section>
 
-    <!-- Filters -->
-    <section class="filters">
-      <form id="filters-form" class="filters-form">
-        <fieldset class="filter-group">
-          <legend>Typ</legend>
-          <label
-            ><input type="checkbox" name="type" value="kurtka" /> Kurtka</label
-          >
-          <label
-            ><input type="checkbox" name="type" value="bluza" /> Bluza</label
-          >
-          <label
-            ><input type="checkbox" name="type" value="kombinezon" />
-            Kombinezon</label
-          >
-          <label><input type="checkbox" name="type" value="body" /> Body</label>
-          <label
-            ><input type="checkbox" name="type" value="spodnie" />
-            Spodnie</label
-          >
-          <label
-            ><input type="checkbox" name="type" value="koszulka" />
-            Koszulki</label
-          >
-        </fieldset>
+    <!-- Filters Drawer -->
+    <button
+      class="filters-handle filters-girl"
+      id="filters-handle"
+      aria-controls="filters-drawer"
+      aria-expanded="false"
+      aria-label="Pokaż filtry"
+    >
+      <span class="handle-arrow">➤</span> Filtry
+    </button>
 
-        <fieldset class="filter-group">
-          <legend>Sezon</legend>
-          <label
-            ><input type="checkbox" name="season" value="zima" /> Zima</label
-          >
-          <label
-            ><input type="checkbox" name="season" value="wiosna" />
-            Wiosna</label
-          >
-          <label
-            ><input type="checkbox" name="season" value="lato" /> Lato</label
-          >
-          <label
-            ><input type="checkbox" name="season" value="jesien" />
-            Jesień</label
-          >
-        </fieldset>
-
-        <fieldset class="filter-group">
-          <legend>Wiek</legend>
-          <label><input type="checkbox" name="age" value="0-1" /> 0–1 r.</label>
-          <label><input type="checkbox" name="age" value="2-3" /> 2–3 r.</label>
-          <label><input type="checkbox" name="age" value="4-5" /> 4–5 r.</label>
-          <label><input type="checkbox" name="age" value="6-7" /> 6–7 r.</label>
-        </fieldset>
-
-        <button type="button" id="apply-filters" class="btn">Filtruj</button>
-        <button type="reset" id="reset-filters" class="btn btn--ghost">
-          Wyczyść
+    <aside class="filters-drawer" id="filters-drawer" aria-hidden="true">
+      <header class="filters-drawer__header filters-drawer__header-girl">
+        <h3>Filtry</h3>
+        <button
+          class="filters-close"
+          id="filters-close"
+          aria-label="Zamknij filtry"
+        >
+          ✕
         </button>
-      </form>
-    </section>
+      </header>
 
+      <!-- твоя секція фільтрів (без змін ID усередині форми) -->
+      <section class="filters">
+        <form id="filters-form" class="filters-form">
+          <!-- Typ odzieży -->
+          <fieldset class="filter-group">
+            <legend>Typ odzieży</legend>
+            <div class="options-scroll">
+              <label
+                ><input type="checkbox" name="type" value="kurtka" />
+                Kurtka</label
+              >
+              <label
+                ><input type="checkbox" name="type" value="płaszcz" />
+                Płaszcz</label
+              >
+              <label
+                ><input type="checkbox" name="type" value="bluza" />
+                Bluza</label
+              >
+              <label
+                ><input type="checkbox" name="type" value="sweter" />
+                Sweter</label
+              >
+              <label
+                ><input type="checkbox" name="type" value="kamizelka" />
+                Kamizelka</label
+              >
+              <label
+                ><input type="checkbox" name="type" value="kombinezon" />
+                Kombinezon</label
+              >
+              <label
+                ><input type="checkbox" name="type" value="body" /> Body</label
+              >
+              <label
+                ><input type="checkbox" name="type" value="pajacyk" />
+                Pajacyk</label
+              >
+              <label
+                ><input type="checkbox" name="type" value="tshirt" />
+                T-shirt</label
+              >
+              <label
+                ><input type="checkbox" name="type" value="longsleeve" />
+                Longsleeve</label
+              >
+              <label
+                ><input type="checkbox" name="type" value="koszula" />
+                Koszula</label
+              >
+              <label
+                ><input type="checkbox" name="type" value="sukienka" />
+                Sukienka</label
+              >
+              <label
+                ><input type="checkbox" name="type" value="spódnica" />
+                Spódnica</label
+              >
+              <label
+                ><input type="checkbox" name="type" value="spodnie" />
+                Spodnie</label
+              >
+              <label
+                ><input type="checkbox" name="type" value="legginsy" />
+                Legginsy</label
+              >
+              <label
+                ><input type="checkbox" name="type" value="dres" /> Dres</label
+              >
+              <label
+                ><input type="checkbox" name="type" value="piżama" />
+                Piżama</label
+              >
+              <label
+                ><input type="checkbox" name="type" value="czapka" />
+                Czapka</label
+              >
+              <label
+                ><input type="checkbox" name="type" value="rękawiczki" />
+                Rękawiczki</label
+              >
+              <label
+                ><input type="checkbox" name="type" value="komin" />
+                Szalik/Komin</label
+              >
+              <label
+                ><input type="checkbox" name="type" value="skarpetki" />
+                Skarpetki/Rajstopy</label
+              >
+              <label
+                ><input type="checkbox" name="type" value="buty" /> Buty</label
+              >
+            </div>
+          </fieldset>
+
+          <!-- Rozmiar / Wzrost (radio) -->
+          <fieldset class="filter-group">
+            <legend>Rozmiar / Wzrost</legend>
+            <div class="options-scroll">
+              <label
+                ><input type="radio" name="size_cm" value="50-56" /> 50–56 cm /
+                do 1 mies.</label
+              >
+              <label
+                ><input type="radio" name="size_cm" value="56-62" /> 56–62 cm /
+                1–3 mies.</label
+              >
+              <label
+                ><input type="radio" name="size_cm" value="62-68" /> 62–68 cm /
+                3–6 mies.</label
+              >
+              <label
+                ><input type="radio" name="size_cm" value="68-74" /> 68–74 cm /
+                6–9 mies.</label
+              >
+              <label
+                ><input type="radio" name="size_cm" value="74-80" /> 74–80 cm /
+                9–12 mies.</label
+              >
+              <label
+                ><input type="radio" name="size_cm" value="80-86" /> 80–86 cm /
+                12–18 mies.</label
+              >
+              <label
+                ><input type="radio" name="size_cm" value="86-92" /> 86–92 cm /
+                18–24 mies.</label
+              >
+              <label
+                ><input type="radio" name="size_cm" value="92" /> 92 cm / 24–36
+                mies.</label
+              >
+              <label
+                ><input type="radio" name="size_cm" value="98" /> 98 cm / 3
+                lata</label
+              >
+              <label
+                ><input type="radio" name="size_cm" value="104" /> 104 cm / 4
+                lata</label
+              >
+              <label
+                ><input type="radio" name="size_cm" value="110" /> 110 cm / 5
+                lat</label
+              >
+              <label
+                ><input type="radio" name="size_cm" value="116" /> 116 cm / 6
+                lat</label
+              >
+              <label
+                ><input type="radio" name="size_cm" value="122" /> 122 cm / 7
+                lat</label
+              >
+              <label
+                ><input type="radio" name="size_cm" value="128" /> 128 cm / 8
+                lat</label
+              >
+              <label
+                ><input type="radio" name="size_cm" value="134" /> 134 cm / 9
+                lat</label
+              >
+              <label
+                ><input type="radio" name="size_cm" value="140" /> 140 cm / 10
+                lat</label
+              >
+              <label
+                ><input type="radio" name="size_cm" value="146" /> 146 cm / 11
+                lat</label
+              >
+              <label
+                ><input type="radio" name="size_cm" value="152" /> 152 cm / 12
+                lat</label
+              >
+              <label
+                ><input type="radio" name="size_cm" value="158" /> 158 cm / 13
+                lat</label
+              >
+              <label
+                ><input type="radio" name="size_cm" value="164" /> 164 cm / 14
+                lat</label
+              >
+              <label
+                ><input type="radio" name="size_cm" value="170" /> 170 cm / 15
+                lat</label
+              >
+              <label
+                ><input type="radio" name="size_cm" value="176" /> 176 cm / 16
+                lat</label
+              >
+            </div>
+          </fieldset>
+
+          <div class="filters-actions">
+            <button type="button" id="apply-filters" class="btn">
+              Filtruj
+            </button>
+            <button type="reset" id="reset-filters" class="btn btn--ghost">
+              Wyczyść
+            </button>
+          </div>
+        </form>
+      </section>
+    </aside>
+    <!-- Напівпрозорий фон -->
+    <div class="filters-overlay" id="filters-overlay" hidden></div>
     <!-- Gallery -->
     <section class="gallery">
       <div id="products-grid" class="products-grid" data-gender="girl">
         <!-- Продукти з бекенду через ui.js -->
-        <!-- Приклад картки:
-      <article class="product-card" data-sku="RM-0101">
-        <div class="product-image">
-          <img src="/assets/sample-girl.jpg" alt="Sukienka — różowa" />
-          <span class="sku-badge">RM-0101</span>
-        </div>
-        <div class="product-meta">
-          <h3 class="product-title">Bluza — różowa</h3>
-          <p class="product-size">Rozmiar: 98</p>
-          <p class="product-price">Cena: 69 zł</p>
-        </div>
-      </article>
-      --></div>
+        <!-- Приклад картки: -->
+        <article class="product-card" data-sku="RM-0101">
+          <div class="product-image">
+            <img src="/assets/sample-girl.jpg" alt="Sukienka — różowa" />
+            <span class="sku-badge">RM-0102</span>
+          </div>
+          <div class="product-meta">
+            <h3 class="product-title">Bluza — różowa</h3>
+            <p class="product-size">Rozmiar: 98</p>
+            <p class="product-price">Cena: 69 zł</p>
+          </div>
+        </article>
+        <article class="product-card" data-sku="RM-0101">
+          <div class="product-image">
+            <img src="/assets/sample-girl.jpg" alt="Sukienka — różowa" />
+            <span class="sku-badge">RM-0103</span>
+          </div>
+          <div class="product-meta">
+            <h3 class="product-title">Bluza — różowa</h3>
+            <p class="product-size">Rozmiar: 98</p>
+            <p class="product-price">Cena: 69 zł</p>
+          </div>
+        </article>
+        <article class="product-card" data-sku="RM-0101">
+          <div class="product-image">
+            <img src="/assets/sample-girl.jpg" alt="Sukienka — różowa" />
+            <span class="sku-badge">RM-0104</span>
+          </div>
+          <div class="product-meta">
+            <h3 class="product-title">Bluza — różowa</h3>
+            <p class="product-size">Rozmiar: 98</p>
+            <p class="product-price">Cena: 69 zł</p>
+          </div>
+        </article>
+        <article class="product-card" data-sku="RM-0101">
+          <div class="product-image">
+            <img src="/assets/sample-girl.jpg" alt="Sukienka — różowa" />
+            <span class="sku-badge">RM-0105</span>
+          </div>
+          <div class="product-meta">
+            <h3 class="product-title">Bluza — różowa</h3>
+            <p class="product-size">Rozmiar: 98</p>
+            <p class="product-price">Cena: 69 zł</p>
+          </div>
+        </article>
+      </div>
     </section>
 
     <!-- Footer -->
     <div id="site-footer"></div>
   </body>
   <script src="js/include.js" type="module" defer></script>
+  <script src="js/filters-drawer.js" type="module" defer></script>
 </html>

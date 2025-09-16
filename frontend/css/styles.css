@@ -4,7 +4,8 @@
 @import './about.css';
 /* @import './girl.css'; */
 /* @import './boy.css'; */
-/* @import './contact.css'; */
+@import './contact.css';
+@import './gallery.css';
 
 /* ============ ROMELI_KIDS — CORE TOKENS ============ */
 :root {
