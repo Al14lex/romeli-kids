@@ -1,21 +1,24 @@
 /* --- Drawer --- */
 .hero-category-girl{
-    background-image: url('/images/hero-home3.jpg');
+    background-image: url('/images/hero-girl.jpg');
+}
+.hero-category-girl::after {
+    background-color: #dbd0c518;
 }
 .hero-category-boy {
-    background-image: url('/images/hero-home3.jpg');
+    background-image: url('/images/hero-boy.jpg');
 }
 .filters-handle {
     position: fixed;
-    top: 50%;
+    top: 10%;
     right: 0;
     transform: translateY(-50%);
     z-index: 1010;
     color: var(--clr-graphite, #3E3E3E);
-    border: none;
+    border: 1px solid #ba8c8c;
     padding: .6rem .9rem;
     border-radius: 8px 0 0 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, .15);
+    box-shadow: 0 6px 14px rgba(0, 0, 0, .15);
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -122,16 +125,19 @@
 .filters-actions .btn {
     padding: 12px 25px;
     border-radius: 8px;
-    background-color: #d7a9a6;
+   
     color: #fff;
-    border: 1px solid #b38988;
+    
     font-weight: 600;
     letter-spacing: .2px;
     transition: transform .1s ease, box-shadow .2s ease, background-color .2s ease;
     box-shadow: 0 6px 18px rgba(0, 0, 0, .15);
     cursor: pointer;
 }
-
+.btn-girl{
+    background-color: #d7a9a6;
+    border: 1px solid #b38988;
+}
 .filters-actions .btn:hover {
     transform: translateY(-2px);
     box-shadow: 0 10px 22px rgba(0, 0, 0, .18);
@@ -197,8 +203,7 @@ input[type="radio"] {
 }
 
 /* Стан :checked — рожевий фон */
-input[type="checkbox"]:checked,
-input[type="radio"]:checked {
+.input-girl:checked {
     background-color: #dbb5b3;
     border-color: #dbb5b3;
 }
@@ -225,13 +230,123 @@ input[type="radio"]:checked::after {
     top: 3px;
     left: 3px;
 }
-/* дрібний тюнінг на дуже вузьких екранах */
-@media (max-width: 480px) {
-    .filters-drawer {
-        width: 88vw;
-    }
-}
 
 .product-card{
     background-color: #E8DFD3;
+}
+.gallery h2{
+    font-size: 22px;
+    margin: 40px 20px;
+    color: #d2a476;
+}
+
+/* ===== GALERIA: GRID ===== */
+.gallery {
+    padding-bottom: 48px;
+}
+
+.products-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+    row-gap: 20px;
+}
+
+/* ===== CARD ===== */
+.product-card {
+    background: var(--clr-beige);
+    border-radius: 10px;
+    width: 40%;
+    box-shadow: 0 6px 22px rgba(62, 62, 62, 0.08);
+    display: flex;
+    position: relative;
+    flex-direction: column;
+    padding: 10px;
+    transition: transform .2s ease, box-shadow .2s ease;
+}
+
+
+/* ===== IMAGE WRAPPER (фіксує однакову висоту) ===== */
+.product-image {
+    position: relative;
+    overflow: hidden;
+}
+
+.product-image img {
+    width: 100%;
+    height: 100%;
+    border-radius: 8px;
+    object-fit: cover;
+    display: block;
+    transform: scale(1.001);
+    transition: transform .35s ease, filter .35s ease, opacity .2s ease;
+}
+
+.product-card:hover .product-image img {
+    transform: scale(1.03);
+}
+
+/* ===== BADGES ===== */
+.sku-badge {
+    position: absolute;
+    left: 5px;
+    bottom: 5px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--clr-ecru);
+    letter-spacing: .02em;
+    backdrop-filter: blur(2px);
+}
+
+.new-badge {
+    position: absolute;
+        top: -5px;
+        right: 10px;
+        padding: 8px 8px 28px;
+        font-size: 11px;
+        font-weight: 700;
+        color: var(--clr-graphite);
+        background: #d7a9a6;
+        border: 1px solid #ba8c8c;
+        border-radius: 5px 5px 25px 25px;
+        z-index: 2;
+        box-shadow: 0 4px 14px rgba(219, 181, 179, 0.35);
+}
+
+/* ===== META ===== */
+.product-meta {
+    padding: 10px 0;
+    text-align: center;
+display: flex;
+flex-direction: column;
+gap: 6px;
+}
+
+.product-price {
+    font-weight: 700;
+    margin: 0;
+    font-size: 18px;
+    color: var(--clr-caramel);
+}
+
+.product-title {
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 1.25;
+    margin: 0;
+}
+
+.product-size{
+    margin: 0;
+}
+
+/* ===== LAZY IMAGE (ефект блюру до завантаження) ===== */
+img.lazy {
+    filter: blur(12px);
+    opacity: .8;
+}
+
+img.lazy.is-loaded {
+    filter: blur(0);
+    opacity: 1;
 }
