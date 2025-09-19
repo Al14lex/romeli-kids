@@ -50,7 +50,26 @@
     border-color: var(--clr-caramel);
     box-shadow: 0 0 0 4px rgba(185, 134, 92, .18);
 }
+/* Автозаповнення */
+.form input:-webkit-autofill,
+.form textarea:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0 1000px #fffdf9 inset !important;
+    /* фон як у тебе */
+    -webkit-text-fill-color: var(--clr-graphite) !important;
+    /* колір тексту */
+    border: 1px solid #ddd5c8 !important;
+    border-radius: 8px;
+    transition: background-color 5000s ease-in-out 0s;
+    /* прибирає жовтий/синій фон */
+}
 
+/* При фокусі з автозаповненням */
+.form input:-webkit-autofill:focus,
+.form textarea:-webkit-autofill:focus {
+    -webkit-box-shadow: 0 0 0 1000px #fffdf9 inset !important;
+    border-color: var(--clr-caramel) !important;
+    box-shadow: 0 0 0 4px rgba(185, 134, 92, .18);
+}
 .form .btn {
     margin-top: 18px;
     width: 100%;
@@ -82,9 +101,9 @@
 }
 
 .status {
-    margin-top: 12px;
+    margin-top: 20px;
     min-height: 20px;
-    font-size: 14px;
+    text-align: center;
 }
 
 .status.ok {
