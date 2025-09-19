@@ -1,19 +1,24 @@
+
 import { defineConfig } from 'vite'
-import { resolve } from 'path'
+import { resolve, dirname } from 'path'
+import { fileURLToPath } from 'url'
+const __dirname = dirname(fileURLToPath(import.meta.url))
 
 export default defineConfig({
-  server: { port: 5173, proxy: { '/api': 'http://localhost:3001' } },
+  base: '/',                 
+  server: { port: 5173 },    
   build: {
+    outDir: 'dist',
     rollupOptions: {
       input: {
-        index: resolve(__dirname, 'index.html'),
-        boys: resolve(__dirname, 'boys.html'),
-        girls: resolve(__dirname, 'girls.html'),
+        index:   resolve(__dirname, 'index.html'),
+        boys:    resolve(__dirname, 'boys.html'),
+        girls:   resolve(__dirname, 'girls.html'),
         contact: resolve(__dirname, 'contact.html'),
-        about: resolve(__dirname, 'about.html'),
-        admin: resolve(__dirname, 'admin.html'),
-        privasy: resolve(__dirname, 'privacy.html'),
-        terms: resolve(__dirname, 'terms.html'),
+        about:   resolve(__dirname, 'about.html'),
+        admin:   resolve(__dirname, 'admin.html'),
+        privacy: resolve(__dirname, 'privacy.html'),
+        terms:   resolve(__dirname, 'terms.html'),
       }
     }
   }
