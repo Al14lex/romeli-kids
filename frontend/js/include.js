@@ -1,15 +1,16 @@
-async function loadComponent(id, file) {
-    const el = document.getElementById(id);
-    if (el) {
-      const response = await fetch(file);
-      const html = await response.text();
-      el.innerHTML = html;
-    }
+// /js/layout.js (або де ти це робиш)
+async function inject(elId, url) {
+  const el = document.getElementById(elId);
+  if (!el) return;
+  try {
+    const res = await fetch(url, { cache: 'no-store' });
+    if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
+    el.innerHTML = await res.text();
+  } catch (e) {
+    console.error('Не вдалось завантажити', url, e);
+    // ВАЖЛИВО: не вставляємо текст 404 у DOM
   }
-  
-  // Після завантаження сторінки
-  window.addEventListener("DOMContentLoaded", () => {
-    loadComponent("site-header", "/partials/header.html");
-    loadComponent("site-footer", "/partials/footer.html");
-  });
-  
+}
+
+inject('site-header', '/partials/header.html');
+inject('site-footer', '/partials/footer.html');
