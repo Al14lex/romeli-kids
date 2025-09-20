@@ -5,7 +5,8 @@ import { fileURLToPath } from 'url'
 const __dirname = dirname(fileURLToPath(import.meta.url))
 
 export default defineConfig({
-  base: '/',                 
+  base: '/',    
+  publicDir: resolve(__dirname, 'public'),             
   server: { port: 5173 },    
   build: {
     outDir: 'dist',
