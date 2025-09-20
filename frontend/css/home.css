@@ -33,6 +33,7 @@
 }
 .hero-title{
     padding: 15px;
+    font-size: 24px;
     background-color: #dbd0c5ba;
     border-radius: 8px;
     box-shadow: 0 3px 22px 10px rgba(0, 0, 0, .20);

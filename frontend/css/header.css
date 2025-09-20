@@ -20,7 +20,7 @@
         
 }
 .header-nav-link {
-    font-size: 20px;
+    font-size: 22px;
     text-decoration: none;
 }
 
@@ -31,8 +31,7 @@
 }
 .logo{
     cursor: none;
-    font-size: 22px;
-    font-weight: 800;
+    font-size: 24px;
 }
 /*===============TAB============*/
 @media screen and (min-width: 768px) {
