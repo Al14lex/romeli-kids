@@ -205,8 +205,10 @@ input[type="radio"] {
     position: relative;
     vertical-align: middle;
     margin-right: .5rem;
+    color-scheme: light;
+    /* щоб iOS не підкладав свою іконку */
+    -webkit-tap-highlight-color: transparent;
 }
-
 input[type="radio"] {
     border-radius: 50%;
 }
@@ -219,20 +221,24 @@ input[type="radio"] {
     background-color: #afc8cd;
     border-color: #afc8cd;
 }
-input[type="checkbox"]:checked::after {
-    content: "✔";
-    color: #fff;
-    font-size: 12px;
-    position: absolute;
-    top: 0;
-    left: 2px;
-    line-height: 15px;
-}
 
+input[type="checkbox"]:checked::after {
+    content: "";
+    position: absolute;
+    width: 6px;
+    height: 10px;
+    left: 4px;
+    /* підженете за потреби */
+    top: 0;
+    border: solid #fff;
+    border-width: 0 3px 3px 0;
+    transform: rotate(45deg);
+    pointer-events: none;
+}
 input[type="radio"]:checked::after {
     content: "";
-    width: 8px;
-    height: 8px;
+    width: 0;
+    height: 0;
     background: #fff;
     border-radius: 50%;
     position: absolute;
