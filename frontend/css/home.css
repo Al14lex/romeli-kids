@@ -116,14 +116,34 @@
 .girls{
     background-color: #dbb5b3;
 }
-.category:hover img {
+/* .category:hover img {
     transform: scale(1.03);
  }
 .category:hover .category-name {
     background-color: var(--clr-caramel);
     color: white;
- }
+ } */
+/* Ховер і фокус тільки там, де реально є курсор */
+@media (hover: hover) and (pointer: fine) {
+    .category:hover img {
+        transform: scale(1.03);
+    }
 
+    .category:hover .category-name {
+        background-color: var(--clr-caramel);
+        color: white;
+    }
+}
+
+/* Фокус (клавіатура) все одно має працювати */
+.category:focus img {
+    transform: scale(1.03);
+}
+
+.category:focus .category-name {
+    background-color: var(--clr-caramel);
+    color: white;
+}
 /*================ Categories TAB ==================*/
 @media screen and (min-width: 768px){
     .categories-sec {
