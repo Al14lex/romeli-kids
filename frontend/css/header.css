@@ -31,6 +31,8 @@
 }
 .logo{
     cursor: none;
+    font-size: 22px;
+    font-weight: 600;
 }
 /*===============TAB============*/
 @media screen and (min-width: 768px) {
