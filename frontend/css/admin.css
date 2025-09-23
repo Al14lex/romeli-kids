@@ -214,7 +214,7 @@
     gap: 10px;
     padding: 10px 12px;
     background: #fff;
-    border: 1px dashed #e3d8cb;
+    border: 2px dashed #bf9b7a;
     border-radius: 10px;
     box-shadow: var(--shadow-soft);
 }
@@ -257,11 +257,12 @@ progress::-moz-progress-bar {
 .upload-result {
     margin-top: 12px;
     padding: 12px 14px;
-    background: #f6edea;
-    border: 1px solid #ecdcd3;
+    background: #f3e8e1;
+    border: 1px solid #ac8773;
     color: #5a463c;
     border-radius: 12px;
     box-shadow: var(--shadow-soft);
+    text-align: center;
 }
 
 /* ===== ARIA допоміжне (якщо знадобиться) ===== */
