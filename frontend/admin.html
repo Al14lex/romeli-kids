@@ -117,90 +117,236 @@
           <p class="success-message">Успішно завантажено!</p>
         </div>
       </section>
-    </main>
+      <!-- Шаблон картки фото (тільки розмітка; клонуватиметься через JS) -->
+      <template id="girls-photo-card-template">
+        <article class="photo-card" data-sku="">
+          <div class="photo-thumb-wrap">
+            <img class="photo-thumb" src="" alt="Попередній перегляд фото" />
+            <button
+              type="button"
+              class="btn btn-danger btn-remove"
+              title="Видалити фото"
+            >
+              Видалити
+            </button>
+          </div>
 
-    <!-- Шаблон картки фото (тільки розмітка; клонуватиметься через JS) -->
-    <template id="girls-photo-card-template">
-      <article class="photo-card" data-sku="">
-        <div class="photo-thumb-wrap">
-          <img class="photo-thumb" src="" alt="Попередній перегляд фото" />
+          <div class="photo-meta">
+            <!-- Артикль генерується автоматично під час додавання файлу -->
+            <div class="field">
+              <label for="sku-__ID__">Артикль</label>
+              <input
+                type="text"
+                id="sku-__ID__"
+                name="sku"
+                class="input"
+                value=""
+                readonly
+              />
+            </div>
+
+            <div class="field">
+              <label for="price-__ID__">Ціна</label>
+              <input
+                type="number"
+                id="price-__ID__"
+                name="price"
+                class="input"
+                inputmode="decimal"
+                min="0"
+                step="0.01"
+                required
+              />
+            </div>
+
+            <div class="field">
+              <label for="salePrice-__ID__">Акційна ціна</label>
+              <input
+                type="number"
+                id="salePrice-__ID__"
+                name="salePrice"
+                class="input"
+                inputmode="decimal"
+                min="0"
+                step="0.01"
+                placeholder="необов’язково"
+              />
+            </div>
+
+            <div class="field">
+              <label for="type-__ID__">Тип</label>
+              <input
+                type="text"
+                id="type-__ID__"
+                name="type"
+                class="input"
+                placeholder="bluzka"
+                required
+              />
+            </div>
+
+            <div class="field">
+              <label for="size-__ID__">Розмір</label>
+              <input
+                type="text"
+                id="size-__ID__"
+                name="size"
+                class="input"
+                placeholder="104"
+                required
+              />
+            </div>
+          </div>
+        </article>
+      </template>
+      <!-- Секція: Завантаження фото для хлопчиків -->
+      <section
+        class="upload-section"
+        id="boys-upload-section"
+        aria-labelledby="boys-upload-title"
+      >
+        <div class="section-head">
+          <h2 class="section-title" id="boys-upload-title">
+            Фото для хлопчиків
+          </h2>
+
+          <button type="button" class="btn btn-primary" id="boys-pick-files">
+            Завантажити фото
+          </button>
+
+          <input
+            type="file"
+            id="boys-file-input"
+            class="visually-hidden"
+            accept="image/*"
+            multiple
+            aria-hidden="true"
+          />
+        </div>
+
+        <div
+          class="cards-grid"
+          id="boys-cards-grid"
+          aria-live="polite"
+          aria-busy="false"
+        ></div>
+
+        <div class="section-actions">
           <button
             type="button"
-            class="btn btn-danger btn-remove"
-            title="Видалити фото"
+            class="btn btn-success"
+            id="boys-upload-all"
+            disabled
           >
-            Видалити
+            Завантажити
           </button>
         </div>
 
-        <div class="photo-meta">
-          <!-- Артикль генерується автоматично під час додавання файлу -->
-          <div class="field">
-            <label for="sku-__ID__">Артикль</label>
-            <input
-              type="text"
-              id="sku-__ID__"
-              name="sku"
-              class="input"
-              value=""
-              readonly
-            />
-          </div>
-
-          <div class="field">
-            <label for="price-__ID__">Ціна (PLN)</label>
-            <input
-              type="number"
-              id="price-__ID__"
-              name="price"
-              class="input"
-              inputmode="decimal"
-              min="0"
-              step="0.01"
-              required
-            />
-          </div>
-
-          <div class="field">
-            <label for="salePrice-__ID__">Акційна ціна (PLN)</label>
-            <input
-              type="number"
-              id="salePrice-__ID__"
-              name="salePrice"
-              class="input"
-              inputmode="decimal"
-              min="0"
-              step="0.01"
-              placeholder="(необов’язково)"
-            />
-          </div>
-
-          <div class="field">
-            <label for="type-__ID__">Тип</label>
-            <input
-              type="text"
-              id="type-__ID__"
-              name="type"
-              class="input"
-              placeholder="напр. sukienka, bluzka"
-              required
-            />
-          </div>
-
-          <div class="field">
-            <label for="size-__ID__">Розмір</label>
-            <input
-              type="text"
-              id="size-__ID__"
-              name="size"
-              class="input"
-              placeholder="напр. 92, 98, 104"
-              required
-            />
-          </div>
+        <div
+          class="upload-progress"
+          id="boys-upload-progress"
+          aria-live="polite"
+          hidden
+        >
+          <label for="boys-progress-bar" class="progress-label"
+            >Завантаження...</label
+          >
+          <progress id="boys-progress-bar" value="0" max="100">0%</progress>
+          <span class="progress-text" id="boys-progress-text">0%</span>
         </div>
-      </article>
-    </template>
+
+        <div
+          class="upload-result"
+          id="boys-upload-result"
+          role="status"
+          aria-live="polite"
+          hidden
+        >
+          <p class="success-message">Успішно завантажено!</p>
+        </div>
+      </section>
+      <!-- Шаблон картки фото для хлопчиків -->
+      <template id="boys-photo-card-template">
+        <article class="photo-card" data-sku="">
+          <div class="photo-thumb-wrap">
+            <img class="photo-thumb" src="" alt="Попередній перегляд фото" />
+            <button
+              type="button"
+              class="btn btn-danger btn-remove"
+              title="Видалити фото"
+            >
+              Видалити
+            </button>
+          </div>
+
+          <div class="photo-meta">
+            <div class="field">
+              <label for="sku-__ID__">Артикль</label>
+              <input
+                type="text"
+                id="sku-__ID__"
+                name="sku"
+                class="input"
+                value=""
+                readonly
+              />
+            </div>
+
+            <div class="field">
+              <label for="price-__ID__">Ціна</label>
+              <input
+                type="number"
+                id="price-__ID__"
+                name="price"
+                class="input"
+                inputmode="decimal"
+                min="0"
+                step="0.01"
+                required
+              />
+            </div>
+
+            <div class="field">
+              <label for="salePrice-__ID__">Акційна ціна</label>
+              <input
+                type="number"
+                id="salePrice-__ID__"
+                name="salePrice"
+                class="input"
+                inputmode="decimal"
+                min="0"
+                step="0.01"
+                placeholder="необов’язково"
+              />
+            </div>
+
+            <div class="field">
+              <label for="type-__ID__">Тип</label>
+              <input
+                type="text"
+                id="type-__ID__"
+                name="type"
+                class="input"
+                placeholder="bluzka"
+                required
+              />
+            </div>
+
+            <div class="field">
+              <label for="size-__ID__">Розмір</label>
+              <input
+                type="text"
+                id="size-__ID__"
+                name="size"
+                class="input"
+                placeholder="104"
+                required
+              />
+            </div>
+          </div>
+        </article>
+      </template>
+    </main>
+    <script src="/js/admin.js" type="module" defer></script>
   </body>
 </html>
-<script src="/js/admin.js" type="module" defer></script>
