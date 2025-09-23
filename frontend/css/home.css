@@ -56,7 +56,6 @@
 /*================ HERO DESC ==================*/
 @media screen and (min-width: 1024px) {
     .hero {
-            margin-top: 70px;
             height: 500px;
         }
     

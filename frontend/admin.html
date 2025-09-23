@@ -1,11 +1,206 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="uk">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Admin</title>
+    <!--favicon-->
+    <link
+      rel="icon"
+      type="image/png"
+      href="public/favicon/favicon-96x96.png"
+      sizes="96x96"
+    />
+    <link rel="icon" type="image/svg+xml" href="public/favicon/favicon.svg" />
+    <link rel="shortcut icon" href="public/favicon/favicon.ico" />
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="public/favicon/apple-touch-icon.png"
+    />
+    <!--fonts-->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Ephesis&family=Playfair+Display+SC&family=Raleway:wght@500&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/modern-normalize/3.0.1/modern-normalize.min.css"
+      integrity="sha512-q6WgHqiHlKyOqslT/lgBgodhd03Wp4BEqKeW6nNtlOY4quzyG3VoQKFrieaCeSnuVseNKRGpGeDU3qPmabCANg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link rel="stylesheet" href="/css/styles.css" />
   </head>
-  <body>
-    <h2>Щось шукаєш? тут нічого нема</h2>
+  <body class="admin-page">
+    <!-- Шапка -->
+    <a href="/" class="btn btn-home" id="go-home">Дім</a>
+    <h1 class="admin-title">Адмін панель</h1>
+    <main class="admin-main" id="admin-main">
+      <!-- Секція: Завантаження фото для дівчаток -->
+      <section
+        class="upload-section"
+        id="girls-upload-section"
+        aria-labelledby="girls-upload-title"
+      >
+        <div class="section-head">
+          <h2 class="section-title" id="girls-upload-title">
+            Фото для дівчаток
+          </h2>
+
+          <!-- Кнопка відкриває системний вибір файлів -->
+          <button type="button" class="btn btn-primary" id="girls-pick-files">
+            Завантажити фото
+          </button>
+
+          <!-- Прихований інпут файлів (дозволяє вибір багатьох фото) -->
+          <input
+            type="file"
+            id="girls-file-input"
+            class="visually-hidden"
+            accept="image/*"
+            multiple
+            aria-hidden="true"
+          />
+        </div>
+
+        <!-- Контейнер для карток передперегляду -->
+        <div
+          class="cards-grid"
+          id="girls-cards-grid"
+          aria-live="polite"
+          aria-busy="false"
+        >
+          <!-- JS додаватиме карти тут -->
+        </div>
+
+        <!-- Кнопка завантаження всіх валідних карток на сервер -->
+        <div class="section-actions">
+          <button
+            type="button"
+            class="btn btn-success"
+            id="girls-upload-all"
+            disabled
+          >
+            Завантажити
+          </button>
+        </div>
+
+        <!-- Прогрес-бар завантаження -->
+        <div
+          class="upload-progress"
+          id="girls-upload-progress"
+          aria-live="polite"
+          hidden
+        >
+          <label for="girls-progress-bar" class="progress-label"
+            >Завантаження...</label
+          >
+          <progress id="girls-progress-bar" value="0" max="100">0%</progress>
+          <span class="progress-text" id="girls-progress-text">0%</span>
+        </div>
+
+        <!-- Повідомлення про успішне завантаження -->
+        <div
+          class="upload-result"
+          id="girls-upload-result"
+          role="status"
+          aria-live="polite"
+          hidden
+        >
+          <p class="success-message">Успішно завантажено!</p>
+        </div>
+      </section>
+    </main>
+
+    <!-- Шаблон картки фото (тільки розмітка; клонуватиметься через JS) -->
+    <template id="girls-photo-card-template">
+      <article class="photo-card" data-sku="">
+        <div class="photo-thumb-wrap">
+          <img class="photo-thumb" src="" alt="Попередній перегляд фото" />
+          <button
+            type="button"
+            class="btn btn-danger btn-remove"
+            title="Видалити фото"
+          >
+            Видалити
+          </button>
+        </div>
+
+        <div class="photo-meta">
+          <!-- Артикль генерується автоматично під час додавання файлу -->
+          <div class="field">
+            <label for="sku-__ID__">Артикль</label>
+            <input
+              type="text"
+              id="sku-__ID__"
+              name="sku"
+              class="input"
+              value=""
+              readonly
+            />
+          </div>
+
+          <div class="field">
+            <label for="price-__ID__">Ціна (PLN)</label>
+            <input
+              type="number"
+              id="price-__ID__"
+              name="price"
+              class="input"
+              inputmode="decimal"
+              min="0"
+              step="0.01"
+              required
+            />
+          </div>
+
+          <div class="field">
+            <label for="salePrice-__ID__">Акційна ціна (PLN)</label>
+            <input
+              type="number"
+              id="salePrice-__ID__"
+              name="salePrice"
+              class="input"
+              inputmode="decimal"
+              min="0"
+              step="0.01"
+              placeholder="(необов’язково)"
+            />
+          </div>
+
+          <div class="field">
+            <label for="type-__ID__">Тип</label>
+            <input
+              type="text"
+              id="type-__ID__"
+              name="type"
+              class="input"
+              placeholder="напр. sukienka, bluzka"
+              required
+            />
+          </div>
+
+          <div class="field">
+            <label for="size-__ID__">Розмір</label>
+            <input
+              type="text"
+              id="size-__ID__"
+              name="size"
+              class="input"
+              placeholder="напр. 92, 98, 104"
+              required
+            />
+          </div>
+        </div>
+      </article>
+    </template>
   </body>
 </html>
+<script src="/js/admin.js" type="module" defer></script>

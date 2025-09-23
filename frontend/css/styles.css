@@ -3,7 +3,7 @@
 @import './footer.css';
 @import './about.css';
 /* @import './girl.css'; */
-/* @import './boy.css'; */
+@import './admin.css';
 @import './contact.css';
 @import './gallery.css';
 @import './privacy.css';
