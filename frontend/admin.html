@@ -43,6 +43,63 @@
     <a href="/" class="btn btn-home" id="go-home">Дім</a>
     <h1 class="admin-title">Адмін панель</h1>
     <main class="admin-main" id="admin-main">
+      <section id="admin-search-section" class="admin-section">
+        <h2>Знайти фото</h2>
+
+        <form id="search-form" class="search-form">
+          <input
+            type="text"
+            id="search-input"
+            placeholder="Rk-a1b2c"
+            required
+          />
+          <button type="submit">Пошук</button>
+        </form>
+
+        <div id="search-result-box" class="search-result-box">
+          <!-- Тут з'явиться результат пошуку або повідомлення -->
+        </div>
+
+        <!-- Шаблон картки для редагування -->
+        <template id="search-photo-card-template">
+          <article class="photo-card editable-card">
+            <div class="photo-card-left">
+              <img class="photo-thumb" src="" alt="Фото товару" />
+            </div>
+            <div class="photo-card-right">
+              <label>
+                Артикль:
+                <input type="text" name="sku" disabled />
+              </label>
+              <label>
+                Ціна:
+                <input type="number" name="price" min="0" />
+              </label>
+              <label>
+                Акційна ціна:
+                <input type="number" name="salePrice" min="0" />
+              </label>
+              <label>
+                Тип:
+                <input type="text" name="type" />
+              </label>
+              <label>
+                Розмір:
+                <input type="text" name="size" />
+              </label>
+              <label>
+                Категорія:
+                <input type="text" name="category" disabled />
+              </label>
+              <div class="card-actions">
+                <button type="button" class="btn-save">Зберегти зміни</button>
+                <button type="button" class="btn-delete">Видалити</button>
+              </div>
+            </div>
+          </article>
+        </template>
+      </section>
+
       <!-- Секція: Завантаження фото для дівчаток -->
       <section
         class="upload-section"
@@ -127,7 +184,7 @@
               class="btn btn-danger btn-remove"
               title="Видалити фото"
             >
-              Видалити
+              ×
             </button>
           </div>
 
@@ -275,7 +332,7 @@
               class="btn btn-danger btn-remove"
               title="Видалити фото"
             >
-              Видалити
+              ×
             </button>
           </div>
 

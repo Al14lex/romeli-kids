@@ -79,3 +79,74 @@ router.post('/admin/boys/upload', upload.single('file'), async (req, res, next) 
 });
 
 module.exports = router;
+
+// ===== Пошук за артиклем (GET) =====
+router.get('/admin/find/:sku', async (req, res, next) => {
+  try {
+    const { sku } = req.params;
+    const product = await Product.findOne({ sku });
+
+    if (!product) return res.status(404).json({ message: 'Not found' });
+    res.json(product);
+  } catch (err) {
+    next(err);
+  }
+});
+
+// ===== Оновлення метаданих (PATCH) =====
+router.patch('/admin/update/:id', async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const { price, salePrice, type, size } = req.body;
+
+    const updated = await Product.findByIdAndUpdate(
+      id,
+      { price, salePrice, type, size },
+      { new: true, runValidators: true }
+    );
+
+    if (!updated) return res.status(404).json({ message: 'Not found' });
+    res.json({ message: 'Оновлено успішно', product: updated });
+  } catch (err) {
+    next(err);
+  }
+});
+
+// ===== Видалення фото (DELETE) =====
+router.delete('/admin/delete/:id', async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const product = await Product.findById(id);
+    if (!product) return res.status(404).json({ message: 'Not found' });
+
+    // Витягуємо ключ з URL
+    const key = product.imageUrl.split('.amazonaws.com/')[1];
+    if (!key) throw new Error('Не вдалося визначити ключ S3.');
+
+    // Видаляємо з S3
+    await s3.deleteObject({
+      Bucket: process.env.S3_BUCKET_NAME,
+      Key: key,
+    }).promise();
+
+    // Видаляємо з MongoDB
+    await Product.findByIdAndDelete(id);
+
+    res.json({ message: 'Фото видалено' });
+  } catch (err) {
+    next(err);
+  }
+});
+// пошук фото по артиклю
+router.get('/admin/find/:sku', async (req, res, next) => {
+  try {
+    const { sku } = req.params;
+    const product = await Product.findOne({ sku });
+
+    if (!product) return res.status(404).json({ message: 'Фото не знайдено' });
+
+    res.json(product);
+  } catch (err) {
+    next(err);
+  }
+});

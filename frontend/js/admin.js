@@ -247,3 +247,101 @@
   initUploadSection({ prefix: 'girls', uploadUrl: 'http://localhost:5000/api/admin/girls/upload', category: 'girls' });
   initUploadSection({ prefix: 'boys',  uploadUrl: 'http://localhost:5000/api/admin/boys/upload',  category: 'boys'  });
 })();
+
+// ==== Пошук, редагування та видалення фото за SKU ====
+(function () {
+  const API = 'http://localhost:5000';
+
+  const searchForm = document.getElementById('search-form');
+  const searchInput = document.getElementById('search-input');
+  const resultBox = document.getElementById('search-result-box');
+  const template = document.getElementById('search-photo-card-template');
+
+  if (!searchForm || !searchInput || !resultBox || !template) return;
+
+  // Рендер повідомлення
+  const showMessage = (msg) => {
+    resultBox.innerHTML = `<div class="not-found">${msg}</div>`;
+  };
+
+  // Рендер картки фото для редагування
+  const renderCard = (data) => {
+    resultBox.innerHTML = '';
+    const clone = template.content.cloneNode(true);
+    const card = clone.querySelector('.photo-card');
+
+    // Заповнення даних
+    card.querySelector('img.photo-thumb').src = data.imageUrl;
+    card.querySelector('input[name="sku"]').value = data.sku;
+    card.querySelector('input[name="price"]').value = data.price;
+    card.querySelector('input[name="salePrice"]').value = data.salePrice || '';
+    card.querySelector('input[name="type"]').value = data.type;
+    card.querySelector('input[name="size"]').value = data.size;
+    card.querySelector('input[name="category"]').value = data.category;
+
+    // Кнопка збереження
+    card.querySelector('.btn-save').addEventListener('click', async () => {
+      const updated = {
+        price: Number(card.querySelector('input[name="price"]').value),
+        salePrice: Number(card.querySelector('input[name="salePrice"]').value) || null,
+        type: card.querySelector('input[name="type"]').value.trim(),
+        size: card.querySelector('input[name="size"]').value.trim()
+      };
+
+      try {
+        const res = await fetch(`${API}/api/admin/update/${data._id}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(updated),
+        });
+
+        if (!res.ok) throw new Error('Не вдалося оновити дані');
+        alert('Зміни збережено успішно!');
+      } catch (err) {
+        console.error(err);
+        alert('Помилка при збереженні змін');
+      }
+    });
+
+    // Кнопка видалення
+    card.querySelector('.btn-delete').addEventListener('click', async () => {
+      if (!confirm('Ви дійсно хочете видалити це фото?')) return;
+
+      try {
+        const res = await fetch(`${API}/api/admin/delete/${data._id}`, {
+          method: 'DELETE'
+        });
+
+        if (!res.ok) throw new Error('Не вдалося видалити');
+        alert('Фото видалено!');
+        resultBox.innerHTML = '';
+      } catch (err) {
+        console.error(err);
+        alert('Помилка при видаленні');
+      }
+    });
+
+    resultBox.appendChild(clone);
+  };
+
+  // Обробка форми пошуку
+  searchForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const sku = searchInput.value.trim();
+    if (!sku) return;
+
+    resultBox.innerHTML = '<div class="not-found">Пошук...</div>';
+
+    try {
+      const res = await fetch(`${API}/api/admin/find/${encodeURIComponent(sku)}`);
+      if (res.status === 404) return showMessage('Такого фото немає у сховищі або ви ввели невірний артикль');
+      if (!res.ok) throw new Error('Помилка запиту');
+
+      const data = await res.json();
+      renderCard(data);
+    } catch (err) {
+      console.error(err);
+      showMessage('Сталася помилка під час пошуку');
+    }
+  });
+})();
