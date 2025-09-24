@@ -1,6 +1,7 @@
 .site-footer{
     background-color: var(--clr-beige);
     padding: 35px 0 20px 0;
+    flex-shrink: 0;
 }
 
 .socials {

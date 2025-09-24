@@ -248,6 +248,7 @@
   initUploadSection({ prefix: 'boys',  uploadUrl: 'http://localhost:5000/api/admin/boys/upload',  category: 'boys'  });
 })();
 
+
 // ==== Пошук, редагування та видалення фото за SKU ====
 (function () {
   const API = 'http://localhost:5000';
@@ -259,9 +260,12 @@
 
   if (!searchForm || !searchInput || !resultBox || !template) return;
 
-  // Рендер повідомлення
+  // Рендер повідомлення з автозниканням
   const showMessage = (msg) => {
-    resultBox.innerHTML = `<div class="not-found">${msg}</div>`;
+    resultBox.innerHTML = `<div class="saved-changes">${msg}</div>`;
+    setTimeout(() => {
+      resultBox.innerHTML = '';
+    }, 5000);
   };
 
   // Рендер картки фото для редагування
@@ -296,10 +300,11 @@
         });
 
         if (!res.ok) throw new Error('Не вдалося оновити дані');
-        alert('Зміни збережено успішно!');
+        searchInput.value = '';
+        showMessage('Зміни збережено успішно!');
       } catch (err) {
         console.error(err);
-        alert('Помилка при збереженні змін');
+        showMessage('Помилка при збереженні змін');
       }
     });
 
@@ -312,12 +317,12 @@
           method: 'DELETE'
         });
 
-        if (!res.ok) throw new Error('Не вдалося видалити');
-        alert('Фото видалено!');
-        resultBox.innerHTML = '';
+          if (!res.ok) throw new Error('Не вдалося видалити');
+          searchInput.value = '';
+        showMessage('Фото видалено!');
       } catch (err) {
         console.error(err);
-        alert('Помилка при видаленні');
+        showMessage('Помилка при видаленні');
       }
     });
 

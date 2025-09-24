@@ -14,7 +14,6 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/api', productRoutes);
 
 app.use(errorHandler);
-
 // запуск
 const PORT = process.env.PORT || 3001;
 mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
@@ -22,3 +21,6 @@ mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTop
     app.listen(PORT, () => console.log(`🚀 Сервер запущено на порту ${PORT}`));
   })
   .catch(err => console.error('Помилка підключення до MongoDB:', err));
+
+
+

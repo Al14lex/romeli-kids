@@ -78,8 +78,6 @@ router.post('/admin/boys/upload', upload.single('file'), async (req, res, next) 
   }
 });
 
-module.exports = router;
-
 // ===== Пошук за артиклем (GET) =====
 router.get('/admin/find/:sku', async (req, res, next) => {
   try {
@@ -150,3 +148,24 @@ router.get('/admin/find/:sku', async (req, res, next) => {
     next(err);
   }
 });
+// ===== Публічний роут: всі товари для дівчат =====
+router.get('/girls', async (req, res, next) => {
+  try {
+    const products = await Product.find({ category: 'girls' }).sort({ createdAt: -1 });
+    res.json(products);
+  } catch (err) {
+    next(err);
+  }
+});
+
+// ===== Публічний роут: всі товари для хлопців =====
+router.get('/boys', async (req, res, next) => {
+  try {
+    const products = await Product.find({ category: 'boys' }).sort({ createdAt: -1 });
+    res.json(products);
+  } catch (err) {
+    next(err);
+  }
+});
+
+module.exports = router;

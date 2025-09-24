@@ -514,33 +514,12 @@
 
       <div id="products-grid" class="products-grid" data-gender="boy">
         <!-- Картка товару -->
-        <article class="product-card" data-sku="RM-0101">
-          <span class="new-badge new-badge-boy">NEW</span>
+        <article class="product-card" data-sku="...">
+          <span class="new-badge new-badge-girl">NEW</span>
+          <!-- опціонально -->
           <div class="product-image">
-            <img
-              class="lazy"
-              loading="lazy"
-              data-src="/images/6.jpg"
-              alt="Bluza różowa"
-            />
-            <span class="sku-badge">RM-0101</span>
-          </div>
-          <div class="product-meta">
-            <p class="product-price">Cena: 69 zł</p>
-            <h3 class="product-title">Bluza</h3>
-            <p class="product-size">Rozmiar: 98</p>
-          </div>
-        </article>
-
-        <article class="product-card" data-sku="RM-0102">
-          <div class="product-image">
-            <img
-              class="lazy"
-              loading="lazy"
-              data-src="/images/7.jpg"
-              alt="Spodnie granatowe"
-            />
-            <span class="sku-badge">RM-0102</span>
+            <img class="lazy" loading="lazy" data-src="..." alt="..." />
+            <span class="sku-badge">SKU</span>
           </div>
           <div class="product-meta">
             <p class="product-price">Cena: 79 zł</p>
@@ -548,64 +527,22 @@
             <p class="product-size">Rozmiar: 104</p>
           </div>
         </article>
-
-        <article class="product-card" data-sku="RM-0103">
-          <span class="new-badge new-badge-boy">NEW</span>
-          <div class="product-image">
-            <img
-              class="lazy"
-              loading="lazy"
-              data-src="/images/8.jpg"
-              alt="Sukienka w kwiaty"
-            />
-            <span class="sku-badge">RM-0103</span>
-          </div>
-          <div class="product-meta">
-            <p class="product-price">Cena: 119 zł</p>
-            <h3 class="product-title">Sukienka</h3>
-            <p class="product-size">Rozmiar: 110</p>
-          </div>
-        </article>
-
-        <article class="product-card" data-sku="RM-0104">
-          <div class="product-image">
-            <img
-              class="lazy"
-              loading="lazy"
-              data-src="/images/9.jpg"
-              alt="Koszula biała"
-            />
-            <span class="sku-badge">RM-0104</span>
-          </div>
-          <div class="product-meta">
-            <p class="product-price">Cena: 89 zł</p>
-            <h3 class="product-title">Koszula</h3>
-            <p class="product-size">Rozmiar: 122</p>
-          </div>
-        </article>
-        <article class="product-card" data-sku="RM-0104">
-          <div class="product-image">
-            <img
-              class="lazy"
-              loading="lazy"
-              data-src="/images/11.jpg"
-              alt="Koszula biała"
-            />
-            <span class="sku-badge">RM-0104</span>
-          </div>
-          <div class="product-meta">
-            <p class="product-price">Cena: 29 zł</p>
-            <h3 class="product-title">Body</h3>
-            <p class="product-size">Rozmiar: 132</p>
-          </div>
-        </article>
       </div>
     </section>
 
     <!-- Footer -->
     <div id="site-footer"></div>
+    <!-- МОДАЛЬНЕ ВІКНО -->
+    <div id="modal" class="image-modal hidden">
+      <div class="modal-content">
+        <button class="modal-close">&times;</button>
+        <img id="modal-image" src="" alt="Zbliżone zdjęcie" />
+        <p id="modal-sku" class="modal-sku"></p>
+      </div>
+    </div>
+    <script src="js/include.js" type="module" defer></script>
+    <script src="js/filters-drawer.js" type="module" defer></script>
+
+    <script src="js/render-products.js" type="module" defer></script>
   </body>
-  <script src="js/include.js" type="module" defer></script>
-  <script src="js/filters-drawer.js" type="module" defer></script>
-  <script src="js/lazy-loading.js" type="module" defer></script>
 </html>
