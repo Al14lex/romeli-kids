@@ -6,7 +6,11 @@ const productRoutes = require('./routes/products');
 const errorHandler = require('./middleware/error');
 const app = express();
 
-app.use(cors());
+app.use(cors({
+  origin: "https://romeli.vercel.app",
+  methods: ["GET", "POST", "PATCH", "DELETE"],
+}));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
