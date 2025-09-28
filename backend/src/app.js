@@ -7,7 +7,11 @@ const errorHandler = require('./middleware/error');
 const app = express();
 
 app.use(cors({
-  origin: "https://romeli.vercel.app",
+  origin: [
+    "http://localhost:5000",
+    "http://localhost:3000",
+    "https://romeli-kids.vercel.app"
+  ],
   methods: ["GET", "POST", "PATCH", "DELETE"],
 }));
 
