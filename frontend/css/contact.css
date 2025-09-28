@@ -84,7 +84,9 @@
     box-shadow: 0 6px 18px rgba(0, 0, 0, .15);
     cursor: pointer;
 }
-
+#submit-btn{
+    margin-left: 0;
+}
 .form .btn:hover {
     transform: translateY(-1px);
     box-shadow: 0 10px 22px rgba(0, 0, 0, .18);
@@ -151,14 +153,14 @@
 
     .form input,
     .form textarea {
-        padding: 14px 16px;
+        padding: 12px 14px;
         font-size: 17px;
         border-radius: 10px;
     }
 
     .form .btn {
         margin-top: 22px;
-        padding: 14px 20px;
+        padding: 12px 20px;
         border-radius: 10px;
         font-size: 18px;
     }
@@ -176,7 +178,7 @@
         }
     
         .form {
-            width: 50%;
+            width:40%;
             padding: 25px;
         }
     
