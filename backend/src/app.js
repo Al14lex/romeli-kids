@@ -4,7 +4,6 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const productRoutes = require('./routes/products');
 const errorHandler = require('./middleware/error');
-
 const app = express();
 
 app.use(cors());
@@ -15,7 +14,7 @@ app.use('/api', productRoutes);
 
 app.use(errorHandler);
 // запуск
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT ||5000;
 mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => {
     app.listen(PORT, () => console.log(`🚀 Сервер запущено на порту ${PORT}`));

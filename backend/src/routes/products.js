@@ -4,9 +4,9 @@ const s3 = require('../utils/s3');
 const Product = require('../models/Product');
 const { v4: uuidv4 } = require('uuid');
 const router = express.Router();
-
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
+
 
 // girls
 router.post('/admin/girls/upload', upload.single('file'), async (req, res, next) => {
@@ -79,17 +79,19 @@ router.post('/admin/boys/upload', upload.single('file'), async (req, res, next) 
 });
 
 // ===== Пошук за артиклем (GET) =====
+// достатньо цього
 router.get('/admin/find/:sku', async (req, res, next) => {
   try {
     const { sku } = req.params;
     const product = await Product.findOne({ sku });
 
-    if (!product) return res.status(404).json({ message: 'Not found' });
+    if (!product) return res.status(404).json({ message: 'Фото не знайдено' });
     res.json(product);
   } catch (err) {
     next(err);
   }
 });
+
 
 // ===== Оновлення метаданих (PATCH) =====
 router.patch('/admin/update/:id', async (req, res, next) => {
@@ -135,19 +137,7 @@ router.delete('/admin/delete/:id', async (req, res, next) => {
     next(err);
   }
 });
-// пошук фото по артиклю
-router.get('/admin/find/:sku', async (req, res, next) => {
-  try {
-    const { sku } = req.params;
-    const product = await Product.findOne({ sku });
 
-    if (!product) return res.status(404).json({ message: 'Фото не знайдено' });
-
-    res.json(product);
-  } catch (err) {
-    next(err);
-  }
-});
 // ===== Публічний роут: всі товари для дівчат =====
 router.get('/girls', async (req, res, next) => {
   try {

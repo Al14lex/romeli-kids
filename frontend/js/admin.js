@@ -251,7 +251,7 @@
 
 // ==== Пошук, редагування та видалення фото за SKU ====
 (function () {
-  const API = 'http://localhost:5000';
+  const API = 'https://romeli-kids.onrender.com/api';
 
   const searchForm = document.getElementById('search-form');
   const searchInput = document.getElementById('search-input');
