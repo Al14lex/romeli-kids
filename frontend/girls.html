@@ -281,6 +281,15 @@
                   />
                   Buty</label
                 >
+                <label
+                  ><input
+                    class="input-girl"
+                    type="checkbox"
+                    name="type"
+                    value="inne"
+                  />
+                  Inne</label
+                >
               </div>
             </fieldset>
 
@@ -488,6 +497,30 @@
                 >
               </div>
             </fieldset>
+            <!-- Dodatkowe opcje -->
+            <fieldset class="filter-group">
+              <legend>Dodatkowe</legend>
+              <div class="options-scroll">
+                <label>
+                  <input
+                    class="input-girl"
+                    type="checkbox"
+                    name="extra"
+                    value="sale"
+                  />
+                  Zniżki
+                </label>
+                <label>
+                  <input
+                    class="input-girl"
+                    type="checkbox"
+                    name="extra"
+                    value="new"
+                  />
+                  Nowości
+                </label>
+              </div>
+            </fieldset>
 
             <div class="filters-actions">
               <button type="button" id="apply-filters" class="btn btn-girl">
@@ -544,6 +577,7 @@
         <p id="modal-sku" class="modal-sku"></p>
       </div>
     </div>
+    <script src="js/filter-products.js" type="module" defer></script>
 
     <script src="js/include.js" type="module" defer></script>
     <script src="js/filters-drawer.js" type="module" defer></script>

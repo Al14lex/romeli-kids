@@ -105,7 +105,7 @@
 }
 
 .options-scroll {
-    max-height: 13.3rem;
+    max-height: 130px;
     overflow: auto;
     padding-right: .25rem;
     border: 1px solid rgba(0, 0, 0, .08);
@@ -369,10 +369,10 @@ gap: 6px;
 .product-price {
     font-weight: 700;
     margin: 0;
-    font-size: 18px;
+    font-size: 20px;
     color: var(--clr-caramel);
     display: flex;
-    flex-direction: column;
+    justify-content: space-evenly;
 }
 
 .product-title {
