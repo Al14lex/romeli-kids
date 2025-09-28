@@ -36,7 +36,7 @@ document.addEventListener("DOMContentLoaded", async () => {
      card.innerHTML = `
   ${badgeNew}
   <div class="product-image">
-    <img class="lazy" loading="lazy" data-src="${item.imageUrl}" alt="${item.type}" />
+    <img class="lazy" data-src="${item.imageUrl}" alt="${item.type}" />
     <span class="sku-badge">${item.sku}</span>
   </div>
   <div class="product-meta">
@@ -85,7 +85,11 @@ function lazyLoadImages() {
     });
   };
 
-  const observer = new IntersectionObserver(onEnter, { rootMargin: '200px 0px' });
+  // const observer = new IntersectionObserver(onEnter, { rootMargin: '200px 0px' });
+  const observer = new IntersectionObserver(onEnter, {
+  rootMargin: '300px 0px', // підвантажує заздалегідь
+  threshold: 0.1           // картинка починає вантажитись, коли хоча б 10% у viewport
+});
   imgs.forEach(img => observer.observe(img));
 }
 

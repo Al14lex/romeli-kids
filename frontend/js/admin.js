@@ -227,15 +227,46 @@
 
     // Події
     pickBtn.addEventListener('click', () => fileInput.click());
-    fileInput.addEventListener('change', () => {
-      const files = Array.from(fileInput.files || []);
-      if (!files.length) return;
-      files.forEach((file) => {
-        if (!file.type.startsWith('image/')) return;
-        createCardFromFile(file);
-      });
-      fileInput.value = ''; // щоб повторний вибір тих самих файлів тригерив change
-    });
+    // fileInput.addEventListener('change', () => {
+    //   const files = Array.from(fileInput.files || []);
+    //   if (!files.length) return;
+    //   files.forEach((file) => {
+    //     if (!file.type.startsWith('image/')) return;
+    //     createCardFromFile(file);
+    //   });
+    //   fileInput.value = ''; // щоб повторний вибір тих самих файлів тригерив change
+    // });
+    fileInput.addEventListener('change', async () => {
+  const files = Array.from(fileInput.files || []);
+  if (!files.length) return;
+
+  for (const file of files) {
+    if (!file.type.startsWith('image/')) continue;
+
+    try {
+      // Опції оптимізації
+      const options = {
+        maxSizeMB: 1,                // максимум ~1MB
+        maxWidthOrHeight: 2000,      // обмежуємо розмір фото (2000px по довшій стороні)
+        useWebWorker: true,          // оптимізація у окремому потоці
+      };
+
+      const compressedFile = await imageCompression(file, options);
+
+      console.log(
+        `Before: ${(file.size / 1024 / 1024).toFixed(2)}MB → After: ${(compressedFile.size / 1024 / 1024).toFixed(2)}MB`
+      );
+
+      createCardFromFile(compressedFile);
+    } catch (err) {
+      console.error("Помилка оптимізації:", err);
+      createCardFromFile(file); // fallback: оригінал
+    }
+  }
+
+  fileInput.value = '';
+});
+
     uploadAllBtn.addEventListener('click', uploadAll);
 
     // старт
