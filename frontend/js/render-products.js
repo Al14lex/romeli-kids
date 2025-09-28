@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   if (!grid) return;
 
   const gender = grid.dataset.gender === 'girl' ? 'girls' : 'boys';
-  const API = `/api/${gender}`;
+  const API = `https://romeli-kids.onrender.com/api/${gender}`;
 
   try {
     const res = await fetch(API);
