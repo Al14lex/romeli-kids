@@ -293,7 +293,7 @@
       };
 
       try {
-        const res = await fetch(`${API}/api/admin/update/${data._id}`, {
+        const res = await fetch(`${API}/admin/update/${data._id}`, {
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(updated),
@@ -313,7 +313,7 @@
       if (!confirm('Ви дійсно хочете видалити це фото?')) return;
 
       try {
-        const res = await fetch(`${API}/api/admin/delete/${data._id}`, {
+        const res = await fetch(`${API}/admin/delete/${data._id}`, {
           method: 'DELETE'
         });
 
@@ -338,7 +338,7 @@
     resultBox.innerHTML = '<div class="not-found">Пошук...</div>';
 
     try {
-      const res = await fetch(`${API}/api/admin/find/${encodeURIComponent(sku)}`);
+      const res = await fetch(`${API}/admin/find/${encodeURIComponent(sku)}`);
       if (res.status === 404) return showMessage('Такого фото немає у сховищі або ви ввели невірний артикль');
       if (!res.ok) throw new Error('Помилка запиту');
 
