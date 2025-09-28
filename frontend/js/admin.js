@@ -244,8 +244,8 @@
 
   // ==== Ініціалізація двох секцій однією функцією ====
   // важливо: ці ендпоінти ми потім реалізуємо в бекенді
-  initUploadSection({ prefix: 'girls', uploadUrl: 'http://localhost:5000/api/admin/girls/upload', category: 'girls' });
-  initUploadSection({ prefix: 'boys',  uploadUrl: 'http://localhost:5000/api/admin/boys/upload',  category: 'boys'  });
+  initUploadSection({ prefix: 'girls', uploadUrl: 'https://romeli-kids.onrender.com/api/admin/girls/upload', category: 'girls' });
+  initUploadSection({ prefix: 'boys',  uploadUrl: 'https://romeli-kids.onrender.com/api/admin/boys/upload',  category: 'boys'  });
 })();
 
 
