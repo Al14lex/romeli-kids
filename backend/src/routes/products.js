@@ -164,7 +164,7 @@ const express = require('express');
 const multer = require('multer');
 const { uploadToS3, deleteFromS3 } = require('../utils/s3');
 const Product = require('../models/Product');
-const { v4: uuidv4 } = require('uuid');
+const { randomUUID } = require('crypto');
 
 const router = express.Router();
 
@@ -185,7 +185,7 @@ router.post('/admin/girls/upload', upload.single('file'), async (req, res, next)
     }
 
     const bucket = process.env.S3_BUCKET_NAME;
-    const key = `girls/${sku}-${uuidv4()}.jpg`;
+    const key = `girls/${sku}-${randomUUID()}.jpg`;
 
     const imageUrl = await uploadToS3({
       bucket,
@@ -225,7 +225,7 @@ router.post('/admin/boys/upload', upload.single('file'), async (req, res, next) 
     }
 
     const bucket = process.env.S3_BUCKET_NAME;
-    const key = `boys/${sku}-${uuidv4()}.jpg`;
+    const key = `boys/${sku}-${randomUUID()}.jpg`;
 
     const imageUrl = await uploadToS3({
       bucket,
