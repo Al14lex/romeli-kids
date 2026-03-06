@@ -7,7 +7,9 @@ const productSchema = new mongoose.Schema({
   type: { type: String, required: true },
   size: { type: String, required: true },
   category: { type: String, enum: ['girls', 'boys'], required: true },
-  imageUrl: { type: String, required: true },
+  images: { type: [String], default: [] },
+  coverIndex: { type: Number, default: 0 },
+  imageUrl: { type: String },
 }, { timestamps: true, collection: 'foto' });
 
 module.exports = mongoose.model('Product', productSchema);

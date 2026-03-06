@@ -172,7 +172,7 @@ display: flex;
 .admin-main {
     max-width: 1200px;
     margin: 20px auto;
-    padding: 0 20px;
+    padding:20px;
 }
 .upload-section{
     border: 3px solid var(--clr-caramel);
@@ -252,11 +252,11 @@ display: flex;
 }
 
 /* ===== Сітка карток ===== */
-.cards-grid {
+/* .cards-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 22px;
-}
+} */
 
 @media (min-width:768px) {
     .cards-grid {

@@ -4,32 +4,16 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Admin</title>
-    <!--favicon-->
-    <link
-      rel="icon"
-      type="image/png"
-      href="public/favicon/favicon-96x96.png"
-      sizes="96x96"
-    />
+    <link rel="icon" type="image/png" href="public/favicon/favicon-96x96.png" sizes="96x96" />
     <link rel="icon" type="image/svg+xml" href="public/favicon/favicon.svg" />
     <link rel="shortcut icon" href="public/favicon/favicon.ico" />
-    <link
-      rel="apple-touch-icon"
-      sizes="180x180"
-      href="public/favicon/apple-touch-icon.png"
-    />
+    <link rel="apple-touch-icon" sizes="180x180" href="public/favicon/apple-touch-icon.png" />
     <meta name="apple-mobile-web-app-title" content="Romeli_kids" />
-    <!--fonts-->
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Ephesis&family=Playfair+Display+SC&family=Raleway:wght@500&display=swap"
-      rel="stylesheet"
-    />
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Ephesis&family=Playfair+Display+SC&family=Raleway:wght@500&display=swap" rel="stylesheet" />
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/modern-normalize/3.0.1/modern-normalize.min.css"
@@ -38,181 +22,184 @@
       referrerpolicy="no-referrer"
     />
     <link rel="stylesheet" href="/css/styles.css" />
+
+    <style>
+      .product-previews-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: 10px;
+        margin-top: 14px;
+      }
+
+      .product-preview-item {
+        position: relative;
+        border: 2px solid transparent;
+        border-radius: 8px;
+        overflow: hidden;
+        padding: 0;
+        cursor: pointer;
+        background: #fff;
+      }
+
+      .product-preview-item img {
+        width: 100%;
+        object-fit: cover;
+        display: block;
+      }
+
+      .product-preview-item.is-cover {
+        border-color: #0d8f4a;
+      }
+
+      .cover-badge {
+        position: absolute;
+        top: 6px;
+        left: 6px;
+        background: #0d8f4a;
+        color: #fff;
+        font-size: 11px;
+        padding: 2px 6px;
+        border-radius: 999px;
+      }
+
+      .preview-remove {
+        position: absolute;
+        top: 6px;
+        right: 6px;
+        width: 22px;
+        height: 22px;
+        font-weight: 600;
+        border: 0;
+        border-radius: 50%;
+        background: transparent;
+        color: #990404;
+        cursor: pointer;
+        line-height: 0;
+      }
+
+      .cover-hint {
+        font-size: 13px;
+        opacity: 0.8;
+      }
+    </style>
   </head>
+
   <body class="admin-page">
-    <!-- Шапка -->
-    <a href="/" class="btn btn-home" id="go-home">Дім</a>
-    <h1 class="admin-title">Адмін панель</h1>
-    <main class="admin-main" id="admin-main">
-      <section id="admin-search-section" class="admin-section">
-        <h2>Знайти фото</h2>
+  <a href="/" class="btn btn-home" id="go-home">Дім</a>
+  <h1 class="admin-title">Адмін панель</h1>
 
-        <form id="search-form" class="search-form">
-          <input
-            type="text"
-            id="search-input"
-            placeholder="Rk-a1b2c"
-            required
-          />
-          <button type="submit">Пошук</button>
-        </form>
+  <main class="admin-main" id="admin-main">
+    <section id="admin-search-section" class="admin-section">
+      <h2>Знайти одиницю товару</h2>
 
-        <div id="search-result-box" class="search-result-box">
-          <!-- Тут з'явиться результат пошуку або повідомлення -->
-        </div>
+      <form id="search-form" class="search-form">
+        <input type="text" id="search-input" placeholder="Rk-a1b2c" required />
+        <button type="submit">Пошук</button>
+      </form>
 
-        <!-- Шаблон картки для редагування -->
-        <template id="search-photo-card-template">
-          <article class="photo-card editable-card">
-            <div class="photo-card-left">
-              <img class="photo-thumb" src="" alt="Фото товару" />
-            </div>
-            <div class="photo-card-right">
-              <label>
-                Артикль:
-                <input type="text" name="sku" disabled />
-              </label>
-              <label>
-                Ціна:
-                <input type="number" name="price" min="0" />
-              </label>
-              <label>
-                Акційна ціна:
-                <input
-                  type="number"
-                  name="salePrice"
-                  min="0"
-                  placeholder="необов’язково"
-                />
-              </label>
-              <label>
-                Тип:
-                <input type="text" name="type" />
-              </label>
-              <label>
-                Розмір:
-                <input type="text" name="size" />
-              </label>
-              <label>
-                Категорія:
-                <input type="text" name="category" disabled />
-              </label>
-              <div class="card-actions">
-                <button type="button" class="btn-save">Зберегти</button>
-                <button type="button" class="btn-delete">Видалити</button>
-              </div>
-            </div>
-          </article>
-        </template>
-      </section>
+      <div id="search-result-box" class="search-result-box"></div>
 
-      <!-- Секція: Завантаження фото для дівчаток -->
-      <section
-        class="upload-section"
-        id="girls-upload-section"
-        aria-labelledby="girls-upload-title"
-      >
-        <div class="section-head">
-          <h2 class="section-title" id="girls-upload-title">
-            Фото для дівчаток
-          </h2>
-
-          <!-- Кнопка відкриває системний вибір файлів -->
-          <button type="button" class="btn btn-primary" id="girls-pick-files">
-            Завантажити фото
-          </button>
-
-          <!-- Прихований інпут файлів (дозволяє вибір багатьох фото) -->
-          <input
-            type="file"
-            id="girls-file-input"
-            class="visually-hidden"
-            accept="image/*"
-            multiple
-            aria-hidden="true"
-          />
-        </div>
-
-        <!-- Контейнер для карток передперегляду -->
-        <div
-          class="cards-grid"
-          id="girls-cards-grid"
-          aria-live="polite"
-          aria-busy="false"
-        >
-          <!-- JS додаватиме карти тут -->
-        </div>
-
-        <!-- Кнопка завантаження всіх валідних карток на сервер -->
-        <div class="section-actions">
-          <button
-            type="button"
-            class="btn btn-success"
-            id="girls-upload-all"
-            disabled
-          >
-            Завантажити
-          </button>
-        </div>
-
-        <!-- Прогрес-бар завантаження -->
-        <div
-          class="upload-progress"
-          id="girls-upload-progress"
-          aria-live="polite"
-          hidden
-        >
-          <label for="girls-progress-bar" class="progress-label"
-            >Завантаження...</label
-          >
-          <progress id="girls-progress-bar" value="0" max="100">0%</progress>
-          <span class="progress-text" id="girls-progress-text">0%</span>
-        </div>
-
-        <!-- Повідомлення про успішне завантаження -->
-        <div
-          class="upload-result"
-          id="girls-upload-result"
-          role="status"
-          aria-live="polite"
-          hidden
-        >
-          <p class="success-message">Успішно завантажено!</p>
-        </div>
-      </section>
-      <!-- Шаблон картки фото (тільки розмітка; клонуватиметься через JS) -->
-      <template id="girls-photo-card-template">
-        <article class="photo-card" data-sku="">
-          <div class="photo-thumb-wrap">
-            <img class="photo-thumb" src="" alt="Попередній перегляд фото" />
-            <button
-              type="button"
-              class="btn btn-danger btn-remove"
-              title="Видалити фото"
-            >
-              ×
-            </button>
+      <template id="search-photo-card-template">
+        <article class="photo-card editable-card">
+          <div class="photo-card-left">
+            <img class="photo-thumb" src="" alt="Фото товару" />
           </div>
+          <div class="photo-card-right">
+            <label>
+              Артикль:
+              <input type="text" name="sku" disabled />
+            </label>
+            <label>
+              Ціна:
+              <input type="number" name="price" min="0" />
+            </label>
+            <label>
+              Акційна ціна:
+              <input
+                type="number"
+                name="salePrice"
+                min="0"
+                placeholder="необов’язково"
+              />
+            </label>
+            <label>
+              Тип:
+              <input type="text" name="type" />
+            </label>
+            <label>
+              Розмір:
+              <input type="text" name="size" />
+            </label>
+            <label>
+              Категорія:
+              <input type="text" name="category" disabled />
+            </label>
+            <div class="card-actions">
+              <button type="button" class="btn-save">Зберегти</button>
+              <button type="button" class="btn-delete">Видалити</button>
+            </div>
+          </div>
+        </article>
+      </template>
+    </section>
 
+    <section
+      class="upload-section"
+      id="product-upload-section"
+      aria-labelledby="product-upload-title"
+    >
+      <div class="section-head">
+        <h2 class="section-title" id="product-upload-title">Завантаження</h2>
+        <button type="button" class="btn btn-primary" id="product-pick-files">
+          вибрати фото
+        </button>
+        <input
+          type="file"
+          id="product-file-input"
+          class="visually-hidden"
+          accept="image/*"
+          multiple
+          aria-hidden="true"
+        />
+      </div>
+
+      <div
+        class="cards-grid"
+        id="product-cards-grid"
+        aria-live="polite"
+        aria-busy="false"
+      >
+        <article class="photo-card" id="product-card">
           <div class="photo-meta">
-            <!-- Артикль генерується автоматично під час додавання файлу -->
             <div class="field">
-              <label for="sku-__ID__">Артикль</label>
+              <label for="product-sku">Артикль</label>
               <input
                 type="text"
-                id="sku-__ID__"
+                id="product-sku"
                 name="sku"
                 class="input"
-                value=""
                 readonly
               />
             </div>
 
             <div class="field">
-              <label for="price-__ID__">Ціна</label>
+              <label for="product-category">Категорія</label>
+              <select
+                id="product-category"
+                name="category"
+                class="input"
+                required
+              >
+                <option value="girls">girls</option>
+                <option value="boys">boys</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="product-price">Ціна</label>
               <input
                 type="number"
-                id="price-__ID__"
+                id="product-price"
                 name="price"
                 class="input"
                 inputmode="decimal"
@@ -223,10 +210,10 @@
             </div>
 
             <div class="field">
-              <label for="salePrice-__ID__">Акційна ціна</label>
+              <label for="product-sale-price">Акційна ціна</label>
               <input
                 type="number"
-                id="salePrice-__ID__"
+                id="product-sale-price"
                 name="salePrice"
                 class="input"
                 inputmode="decimal"
@@ -237,10 +224,10 @@
             </div>
 
             <div class="field">
-              <label for="type-__ID__">Тип</label>
+              <label for="product-type">Тип</label>
               <input
                 type="text"
-                id="type-__ID__"
+                id="product-type"
                 name="type"
                 class="input"
                 placeholder="bluzka"
@@ -249,10 +236,10 @@
             </div>
 
             <div class="field">
-              <label for="size-__ID__">Розмір</label>
+              <label for="product-size">Розмір</label>
               <input
                 type="text"
-                id="size-__ID__"
+                id="product-size"
                 name="size"
                 class="input"
                 placeholder="104"
@@ -260,158 +247,47 @@
               />
             </div>
           </div>
+          <div id="product-previews-grid" class="product-previews-grid"></div>
         </article>
-      </template>
-      <!-- Секція: Завантаження фото для хлопчиків -->
-      <section
-        class="upload-section"
-        id="boys-upload-section"
-        aria-labelledby="boys-upload-title"
+      </div>
+
+      <div class="section-actions">
+        <button
+          type="button"
+          class="btn btn-success"
+          id="product-upload"
+          disabled
+        >
+          Завантажити
+        </button>
+      </div>
+
+      <div
+        class="upload-progress"
+        id="product-upload-progress"
+        aria-live="polite"
+        hidden
       >
-        <div class="section-head">
-          <h2 class="section-title" id="boys-upload-title">
-            Фото для хлопчиків
-          </h2>
-
-          <button type="button" class="btn btn-primary" id="boys-pick-files">
-            Завантажити фото
-          </button>
-
-          <input
-            type="file"
-            id="boys-file-input"
-            class="visually-hidden"
-            accept="image/*"
-            multiple
-            aria-hidden="true"
-          />
-        </div>
-
-        <div
-          class="cards-grid"
-          id="boys-cards-grid"
-          aria-live="polite"
-          aria-busy="false"
-        ></div>
-
-        <div class="section-actions">
-          <button
-            type="button"
-            class="btn btn-success"
-            id="boys-upload-all"
-            disabled
-          >
-            Завантажити
-          </button>
-        </div>
-
-        <div
-          class="upload-progress"
-          id="boys-upload-progress"
-          aria-live="polite"
-          hidden
+        <label for="product-progress-bar" class="progress-label"
+          >Завантаження...</label
         >
-          <label for="boys-progress-bar" class="progress-label"
-            >Завантаження...</label
-          >
-          <progress id="boys-progress-bar" value="0" max="100">0%</progress>
-          <span class="progress-text" id="boys-progress-text">0%</span>
-        </div>
+        <progress id="product-progress-bar" value="0" max="100">0%</progress>
+        <span class="progress-text" id="product-progress-text">0%</span>
+      </div>
 
-        <div
-          class="upload-result"
-          id="boys-upload-result"
-          role="status"
-          aria-live="polite"
-          hidden
-        >
-          <p class="success-message">Успішно завантажено!</p>
-        </div>
-      </section>
-      <!-- Шаблон картки фото для хлопчиків -->
-      <template id="boys-photo-card-template">
-        <article class="photo-card" data-sku="">
-          <div class="photo-thumb-wrap">
-            <img class="photo-thumb" src="" alt="Попередній перегляд фото" />
-            <button
-              type="button"
-              class="btn btn-danger btn-remove"
-              title="Видалити фото"
-            >
-              ×
-            </button>
-          </div>
+      <div
+        class="upload-result"
+        id="product-upload-result"
+        role="status"
+        aria-live="polite"
+        hidden
+      >
+        <p class="success-message">Успішно завантажено!</p>
+      </div>
+    </section>
+  </main>
 
-          <div class="photo-meta">
-            <div class="field">
-              <label for="sku-__ID__">Артикль</label>
-              <input
-                type="text"
-                id="sku-__ID__"
-                name="sku"
-                class="input"
-                value=""
-                readonly
-              />
-            </div>
-
-            <div class="field">
-              <label for="price-__ID__">Ціна</label>
-              <input
-                type="number"
-                id="price-__ID__"
-                name="price"
-                class="input"
-                inputmode="decimal"
-                min="0"
-                step="0.01"
-                required
-              />
-            </div>
-
-            <div class="field">
-              <label for="salePrice-__ID__">Акційна ціна</label>
-              <input
-                type="number"
-                id="salePrice-__ID__"
-                name="salePrice"
-                class="input"
-                inputmode="decimal"
-                min="0"
-                step="0.01"
-                placeholder="необов’язково"
-              />
-            </div>
-
-            <div class="field">
-              <label for="type-__ID__">Тип</label>
-              <input
-                type="text"
-                id="type-__ID__"
-                name="type"
-                class="input"
-                placeholder="bluzka"
-                required
-              />
-            </div>
-
-            <div class="field">
-              <label for="size-__ID__">Розмір</label>
-              <input
-                type="text"
-                id="size-__ID__"
-                name="size"
-                class="input"
-                placeholder="104"
-                required
-              />
-            </div>
-          </div>
-        </article>
-      </template>
-    </main>
-    <script src="https://unpkg.com/browser-image-compression@2.0.2/dist/browser-image-compression.js"></script>
-
-    <script src="/js/admin.js" type="module" defer></script>
-  </body>
+  <script src="https://unpkg.com/browser-image-compression@2.0.2/dist/browser-image-compression.js"></script>
+  <script src="/js/admin.js" type="module" defer></script>
+</body>
 </html>
