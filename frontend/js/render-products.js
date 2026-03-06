@@ -10,6 +10,7 @@ function resolveApiBase() {
 }
 
 const API_BASE = window.__API_BASE__ || resolveApiBase();
+const skuCopyTimers = new WeakMap();
 
 function normalizeImages(product) {
   if (Array.isArray(product?.images) && product.images.length) {
@@ -29,6 +30,66 @@ function normalizeCoverIndex(rawCoverIndex, totalImages) {
 function capitalize(str) {
   if (!str) return '';
   return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+async function copyTextToClipboard(text) {
+  if (!text) return false;
+
+  if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+    try {
+      await navigator.clipboard.writeText(text);
+      return true;
+    } catch {
+      // Fallback handled below.
+    }
+  }
+
+  const fallbackArea = document.createElement('textarea');
+  fallbackArea.value = text;
+  fallbackArea.setAttribute('readonly', '');
+  fallbackArea.style.position = 'fixed';
+  fallbackArea.style.top = '-9999px';
+  fallbackArea.style.left = '-9999px';
+  fallbackArea.style.opacity = '0';
+  fallbackArea.style.pointerEvents = 'none';
+  document.body.appendChild(fallbackArea);
+  fallbackArea.focus();
+  fallbackArea.select();
+
+  let copied = false;
+  try {
+    copied = document.execCommand('copy');
+  } catch {
+    copied = false;
+  }
+
+  document.body.removeChild(fallbackArea);
+  return copied;
+}
+
+function setSkuBadgeFeedback(badge, copied) {
+  const originalText = badge.dataset.originalText || badge.dataset.sku || badge.textContent.trim();
+  const previousTimer = skuCopyTimers.get(badge);
+  if (previousTimer) clearTimeout(previousTimer);
+
+  badge.classList.remove('is-copied', 'is-copy-error');
+  badge.classList.add(copied ? 'is-copied' : 'is-copy-error');
+  badge.textContent = copied ? 'skopiowano' : 'Błąd kopiowania';
+
+  const timer = setTimeout(() => {
+    badge.classList.remove('is-copied', 'is-copy-error');
+    badge.textContent = originalText;
+  }, 1200);
+  skuCopyTimers.set(badge, timer);
+}
+
+async function handleSkuCopyInteraction(event, badge) {
+  event.preventDefault();
+  event.stopPropagation();
+
+  const sku = badge.dataset.sku || badge.textContent.trim();
+  const copied = await copyTextToClipboard(sku);
+  setSkuBadgeFeedback(badge, copied);
 }
 
 // Lazy-load utility.
@@ -117,6 +178,16 @@ async function renderProducts() {
           <p class="product-size">Rozmiar: ${item.size || ''}</p>
         </div>
       `;
+
+      const skuBadge = card.querySelector('.sku-badge');
+      if (skuBadge) {
+        const skuText = item.sku || '';
+        skuBadge.dataset.sku = skuText;
+        skuBadge.dataset.originalText = skuText;
+        skuBadge.setAttribute('role', 'button');
+        skuBadge.setAttribute('tabindex', '0');
+        skuBadge.setAttribute('aria-label', `Copy SKU ${skuText}`);
+      }
 
       grid.appendChild(card);
     });
@@ -327,7 +398,23 @@ function initModalGallery() {
   }, { passive: true });
 }
 
+function initSkuCopy() {
+  document.body.addEventListener('click', async (event) => {
+    const badge = event.target.closest('.sku-badge');
+    if (!badge) return;
+    await handleSkuCopyInteraction(event, badge);
+  });
+
+  document.body.addEventListener('keydown', async (event) => {
+    const badge = event.target.closest('.sku-badge');
+    if (!badge) return;
+    if (event.key !== 'Enter' && event.key !== ' ') return;
+    await handleSkuCopyInteraction(event, badge);
+  });
+}
+
 document.addEventListener('DOMContentLoaded', async () => {
+  initSkuCopy();
   initModalGallery();
   await renderProducts();
 });

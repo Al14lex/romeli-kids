@@ -327,6 +327,31 @@ input[type="radio"]:checked::after {
     backdrop-filter: blur(2px);
 }
 
+.sku-badge[role="button"] {
+    cursor: pointer;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    transition: opacity .15s ease;
+}
+
+.sku-badge[role="button"]:hover {
+    opacity: .8;
+}
+
+.sku-badge[role="button"]:focus-visible {
+    outline: 1px solid rgba(62, 62, 62, .35);
+    outline-offset: 2px;
+    border-radius: 4px;
+}
+
+.sku-badge.is-copied {
+    color: #2f6f3f;
+}
+
+.sku-badge.is-copy-error {
+    color: #9a2f2f;
+}
+
 .new-badge {
     position: absolute;
         top: -5px;
