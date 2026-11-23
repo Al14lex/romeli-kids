@@ -1,0 +1,15 @@
+name: diag
+on:
+  push:
+    branches: [claude/diag]
+permissions: {}
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          B=https://romeli-kids.onrender.com/api
+          echo "health: $(curl -s -o /dev/null -w '%{http_code}' -m 90 $B/health)"
+          echo "login: $(curl -s -o /dev/null -w '%{http_code}' -m 90 -X POST -H 'Content-Type: application/json' -d '{"password":"x"}' $B/admin/login)"
+          echo "find-no-token: $(curl -s -o /dev/null -w '%{http_code}' -m 90 $B/admin/find/Rk-none)"
+          echo "girls has notes field: $(curl -s -m 90 $B/girls | head -c 4000 | grep -c '"notes"')"
