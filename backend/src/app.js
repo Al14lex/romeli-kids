@@ -26,6 +26,9 @@ app.use(cors({
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Lightweight check for the keep-alive ping (does not touch the database).
+app.get('/api/health', (req, res) => res.json({ ok: true }));
+
 // Admin: login is public, everything else under /api/admin needs a valid token.
 app.post('/api/admin/login', login);
 app.use('/api/admin', requireAdmin);
