@@ -1,45 +1,26 @@
-document.addEventListener("DOMContentLoaded", () => {
-  console.log("check-admin.js завантажено");
+// Hidden entry to the admin page: click the logo on the home page.
+// The password is checked by the server, it is not stored in the site code.
+import { getToken, login } from './admin-auth.js';
 
-  const ADMIN_KEY   = "adminAccess";
-  const ADMIN_TOKEN = "skorpion397";
-  const MAX_ATTEMPTS = 3;
+document.addEventListener('click', async (e) => {
+  const logo = e.target.closest('.logo-click');
+  if (!logo) return;
 
-  document.addEventListener("click", (e) => {
-    const logo = e.target.closest(".logo-click");
-    if (!logo) return; 
+  e.preventDefault();
+  const adminUrl = logo.dataset.adminUrl || 'admin.html';
 
-    e.preventDefault();
+  if (getToken()) {
+    window.location.href = adminUrl;
+    return;
+  }
 
-    const adminUrl = logo.dataset.adminUrl || "admin.html"; 
-    const saved = localStorage.getItem(ADMIN_KEY);
+  const password = prompt('Введіть пароль адміністратора:');
+  if (password === null || password === '') return;
 
-    if (saved === ADMIN_TOKEN) {
-      window.location.href = adminUrl;
-      return;
-    }
-
-    let attempts = 0;
-    while (attempts < MAX_ATTEMPTS) {
-      const input = prompt("Введіть пароль адміністратора:");
-      if (input === null) return; // відміна
-
-      if (input === ADMIN_TOKEN) {
-        localStorage.setItem(ADMIN_KEY, ADMIN_TOKEN);
-        window.location.href = adminUrl;
-        return;
-      } else {
-        attempts++;
-        alert(`Неправильний пароль. Спроба ${attempts} з ${MAX_ATTEMPTS}.`);
-      }
-    }
-
-    alert("Вичерпано кількість спроб. Доступ заборонено.");
-  });
-
-  // Опційно: виклич з консолі або повісь на кнопку в адмінці
-  window.logoutAdmin = function () {
-    localStorage.removeItem(ADMIN_KEY);
-    alert("Ви вийшли з адмінки (локально).");
-  };
+  const result = await login(password);
+  if (result.ok) {
+    window.location.href = adminUrl;
+  } else {
+    alert(result.message);
+  }
 });

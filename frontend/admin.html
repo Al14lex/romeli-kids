@@ -90,7 +90,25 @@
   <a href="/" class="btn btn-home" id="go-home">Дім</a>
   <h1 class="admin-title">Адмін панель</h1>
 
-  <main class="admin-main" id="admin-main">
+  <section id="admin-login" class="admin-login" hidden>
+    <h2>Вхід в адмінку</h2>
+    <form id="login-form" class="login-form">
+      <input
+        type="password"
+        id="login-password"
+        autocomplete="current-password"
+        placeholder="Пароль"
+        required
+      />
+      <button type="submit" id="login-submit">Увійти</button>
+    </form>
+    <p id="login-error" class="login-error" role="alert"></p>
+  </section>
+
+  <main class="admin-main" id="admin-main" hidden>
+    <div class="admin-toolbar">
+      <button type="button" class="btn btn-logout" id="logout-btn">Вийти</button>
+    </div>
     <section id="admin-search-section" class="admin-section">
       <h2>Знайти одиницю товару</h2>
 
