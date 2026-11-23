@@ -13,6 +13,8 @@ app.use(cors({
     'http://localhost:5000',
     'http://localhost:5173',
     'https://romeli-kids.vercel.app',
+    // Vercel preview deployments of this project (test links before going live)
+    /^https:\/\/romeli-kids-[a-z0-9-]+\.vercel\.app$/,
   ],
   methods: ['GET', 'POST', 'PATCH', 'DELETE'],
 }));

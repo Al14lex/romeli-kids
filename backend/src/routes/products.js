@@ -3,12 +3,21 @@ const multer = require('multer');
 const { uploadToS3, uploadManyToS3, deleteFromS3 } = require('../utils/s3');
 const Product = require('../models/Product');
 const { randomUUID } = require('crypto');
+const {
+  ALLOWED_CATEGORIES,
+  parsePrice,
+  parseRequiredText,
+  parseNotes,
+  parseCategory,
+  currentImagesOf,
+  parseKeepImages,
+  planImageUpdate,
+} = require('../utils/productFields');
 
 const router = express.Router();
 
 const storage = multer.memoryStorage();
-const upload = multer({ storage });
-const ALLOWED_CATEGORIES = new Set(['girls', 'boys']);
+const upload = multer({ storage, limits: { fileSize: 15 * 1024 * 1024 } });
 const logUploadRouteHit = (route, meta = {}) => {
   console.log(`[upload-route] ${route}`, meta);
 };
@@ -40,13 +49,27 @@ const normalizeProductResponse = (productDoc) => {
     images,
     coverIndex,
     imageUrl: product?.imageUrl || images[coverIndex] || null,
+    notes: product?.notes || '',
   };
+};
+
+const deleteS3Urls = async (urls) => {
+  const keys = [...new Set(urls.map(parseS3KeyFromUrl).filter(Boolean))];
+  const results = await Promise.allSettled(
+    keys.map((key) => deleteFromS3({ bucket: process.env.S3_BUCKET_NAME, key }))
+  );
+  results.forEach((result, index) => {
+    if (result.status === 'rejected') {
+      console.error('[s3] could not delete', keys[index], result.reason);
+    }
+  });
 };
 
 // ===== Upload: girls (legacy single-file endpoint) =====
 router.post('/admin/girls/upload', upload.single('file'), async (req, res, next) => {
   try {
     const { sku, price, salePrice, type, size } = req.body;
+    const notes = parseNotes(req.body.notes);
     logUploadRouteHit('/admin/girls/upload', { sku, hasFile: !!req.file });
 
     const file = req.file;
@@ -77,6 +100,7 @@ router.post('/admin/girls/upload', upload.single('file'), async (req, res, next)
       images: [imageUrl],
       coverIndex: 0,
       imageUrl,
+      notes,
     });
 
     await product.save();
@@ -90,6 +114,7 @@ router.post('/admin/girls/upload', upload.single('file'), async (req, res, next)
 router.post('/admin/boys/upload', upload.single('file'), async (req, res, next) => {
   try {
     const { sku, price, salePrice, type, size } = req.body;
+    const notes = parseNotes(req.body.notes);
     logUploadRouteHit('/admin/boys/upload', { sku, hasFile: !!req.file });
 
     const file = req.file;
@@ -120,6 +145,7 @@ router.post('/admin/boys/upload', upload.single('file'), async (req, res, next) 
       images: [imageUrl],
       coverIndex: 0,
       imageUrl,
+      notes,
     });
 
     await product.save();
@@ -133,6 +159,7 @@ router.post('/admin/boys/upload', upload.single('file'), async (req, res, next) 
 router.post('/admin/products/upload', upload.array('images', 20), async (req, res, next) => {
   try {
     const { sku, price, salePrice, type, size, category } = req.body;
+    const notes = parseNotes(req.body.notes);
     const files = req.files || [];
     logUploadRouteHit('/admin/products/upload', {
       sku,
@@ -175,6 +202,7 @@ router.post('/admin/products/upload', upload.array('images', 20), async (req, re
       images,
       coverIndex,
       imageUrl: images[coverIndex] || null,
+      notes,
     });
 
     await product.save();
@@ -197,21 +225,103 @@ router.get('/admin/find/:sku', async (req, res, next) => {
   }
 });
 
-// ===== Update metadata =====
+// ===== Update metadata (JSON, kept for compatibility) =====
 router.patch('/admin/update/:id', async (req, res, next) => {
   try {
     const { id } = req.params;
-    const { price, salePrice, type, size } = req.body;
+    const { price, salePrice, type, size, notes, category } = req.body;
+
+    const update = {};
+    if (price !== undefined) update.price = parsePrice(price, { required: true, field: 'price' });
+    if (salePrice !== undefined) update.salePrice = parsePrice(salePrice, { required: false, field: 'salePrice' });
+    if (type !== undefined) update.type = parseRequiredText(type, 'type');
+    if (size !== undefined) update.size = parseRequiredText(size, 'size');
+    if (notes !== undefined) update.notes = parseNotes(notes);
+    if (category !== undefined) update.category = parseCategory(category);
 
     const updated = await Product.findByIdAndUpdate(
       id,
-      { price, salePrice, type, size },
+      update,
       { new: true, runValidators: true }
     );
 
     if (!updated) return res.status(404).json({ message: 'Not found' });
     res.json({ message: 'Updated successfully', product: normalizeProductResponse(updated) });
   } catch (err) {
+    next(err);
+  }
+});
+
+// ===== Full edit: fields + photos + cover (multipart) =====
+// Body fields: price, salePrice, type, size, category, notes,
+//   keepImages (JSON array of existing image URLs, in display order),
+//   coverIndex (index into keepImages followed by newly uploaded files).
+// Files: images[] (new photos to append).
+router.patch('/admin/products/:id', upload.array('images', 20), async (req, res, next) => {
+  const files = req.files || [];
+  let uploaded = [];
+
+  try {
+    const product = await Product.findById(req.params.id);
+    if (!product) return res.status(404).json({ message: 'Not found' });
+
+    const category = req.body.category !== undefined
+      ? parseCategory(req.body.category)
+      : product.category;
+
+    const fields = {
+      price: parsePrice(req.body.price ?? product.price, { required: true, field: 'price' }),
+      salePrice: req.body.salePrice !== undefined
+        ? parsePrice(req.body.salePrice, { required: false, field: 'salePrice' })
+        : (product.salePrice ?? null),
+      type: parseRequiredText(req.body.type ?? product.type, 'type'),
+      size: parseRequiredText(req.body.size ?? product.size, 'size'),
+      notes: req.body.notes !== undefined ? parseNotes(req.body.notes) : (product.notes || ''),
+      category,
+    };
+
+    const currentImages = currentImagesOf(product);
+    const keepImages = parseKeepImages(req.body.keepImages, currentImages);
+    const { coverIndex, removed } = planImageUpdate({
+      currentImages,
+      keepImages,
+      newCount: files.length,
+      coverIndex: req.body.coverIndex ?? product.coverIndex ?? 0,
+    });
+
+    logUploadRouteHit('/admin/products/:id (edit)', {
+      sku: product.sku,
+      kept: keepImages.length,
+      added: files.length,
+      removed: removed.length,
+      coverIndex,
+    });
+
+    if (files.length) {
+      uploaded = await uploadManyToS3({
+        bucket: process.env.S3_BUCKET_NAME,
+        baseKeyPrefix: `${category}/${product.sku}-${randomUUID()}`,
+        files,
+      });
+    }
+
+    const images = [...keepImages, ...uploaded];
+    Object.assign(product, fields, {
+      images,
+      coverIndex,
+      imageUrl: images[coverIndex] || null,
+    });
+
+    await product.save();
+    uploaded = [];
+
+    // Remove photos the admin deleted, only after the product is saved.
+    if (removed.length) await deleteS3Urls(removed);
+
+    res.json({ message: 'Updated successfully', product: normalizeProductResponse(product) });
+  } catch (err) {
+    // Saving failed: do not leave orphan uploads in S3.
+    if (uploaded.length) await deleteS3Urls(uploaded);
     next(err);
   }
 });
@@ -228,19 +338,8 @@ router.delete('/admin/delete/:id', async (req, res, next) => {
       ? product.images
       : (product.imageUrl ? [product.imageUrl] : []);
 
-    const keys = [...new Set(imageUrls.map(parseS3KeyFromUrl).filter(Boolean))];
-    if (!keys.length) {
-      return res.status(400).json({ message: 'Could not determine S3 keys.' });
-    }
-
-    await Promise.all(
-      keys.map((key) => deleteFromS3({
-        bucket: process.env.S3_BUCKET_NAME,
-        key,
-      }))
-    );
-
     await Product.findByIdAndDelete(id);
+    await deleteS3Urls(imageUrls);
 
     res.json({ message: 'Photo deleted' });
   } catch (err) {
