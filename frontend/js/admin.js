@@ -10,7 +10,161 @@ function resolveApiBase() {
 
 const API_BASE = window.__API_BASE__ || resolveApiBase();
 const ENABLE_LEGACY_UPLOAD_FALLBACK = window.__ENABLE_LEGACY_UPLOAD_FALLBACK__ === true;
+const NOTES_MAX_LENGTH = 300;
 
+// Must match the "Typ odzieży" filters on girls.html / boys.html,
+// so every product can be found with the filters.
+const PRODUCT_TYPES = [
+  'Odzież zimowa',
+  'Odzież przejściowa',
+  'Bluza/Sweter',
+  'Zestawy',
+  'Komplety',
+  'Body/Pajacyk',
+  'Kombinezon/Ogrodniczki',
+  'T-shirt',
+  'Bluzka',
+  'Koszula',
+  'Sukienka',
+  'Spódnica/Spodenki',
+  'Spodnie/Legginsy',
+  'Odzież sportowa',
+  'Piżama',
+  'Obuwie',
+  'Inne',
+];
+
+// ===== Shared helpers =====
+
+const revokeObjectURLSafe = (url) => {
+  try { URL.revokeObjectURL(url); } catch {}
+};
+
+const sameText = (a, b) => String(a || '').trim().toLowerCase() === String(b || '').trim().toLowerCase();
+
+// Fills a <select> with the product types. A value that is not in the list
+// (older products) is kept as an extra option so it is not lost on save.
+function fillTypeSelect(select, currentValue = '') {
+  select.innerHTML = '';
+
+  const placeholder = document.createElement('option');
+  placeholder.value = '';
+  placeholder.textContent = '— оберіть тип —';
+  select.appendChild(placeholder);
+
+  let matched = '';
+  PRODUCT_TYPES.forEach((type) => {
+    const option = document.createElement('option');
+    option.value = type;
+    option.textContent = type;
+    select.appendChild(option);
+    if (currentValue && sameText(type, currentValue)) matched = type;
+  });
+
+  if (currentValue && !matched) {
+    const legacy = document.createElement('option');
+    legacy.value = currentValue;
+    legacy.textContent = `${currentValue} (старий тип, оберіть новий)`;
+    select.appendChild(legacy);
+    matched = currentValue;
+  }
+
+  select.value = matched;
+}
+
+function bindNotesCounter(textarea, counter) {
+  const update = () => {
+    counter.textContent = `${textarea.value.length}/${NOTES_MAX_LENGTH}`;
+    counter.classList.toggle('is-full', textarea.value.length >= NOTES_MAX_LENGTH);
+  };
+  textarea.addEventListener('input', update);
+  update();
+  return update;
+}
+
+async function compressImageSafe(file) {
+  if (typeof imageCompression !== 'function') return file;
+
+  const options = {
+    maxSizeMB: 1,
+    maxWidthOrHeight: 2000,
+    useWebWorker: true,
+  };
+
+  try {
+    const compressed = await imageCompression(file, options);
+    return new File([compressed], file.name, { type: compressed.type || file.type });
+  } catch (err) {
+    console.error('Compression error:', err);
+    return file;
+  }
+}
+
+// Renders photo previews. items: [{ src, label }]. Click = set cover, "x" = remove.
+function renderPhotoPreviews({ container, items, coverIndex, onSetCover, onRemove }) {
+  container.innerHTML = '';
+
+  items.forEach((item, index) => {
+    const preview = document.createElement('div');
+    preview.className = 'product-preview-item';
+    preview.setAttribute('role', 'button');
+    preview.setAttribute('tabindex', '0');
+    preview.title = 'Зробити головним фото';
+    preview.setAttribute('aria-label', `Фото ${index + 1}${index === coverIndex ? ' (головне)' : ''}`);
+    if (index === coverIndex) preview.classList.add('is-cover');
+
+    const img = document.createElement('img');
+    img.src = item.src;
+    img.alt = item.label || `image-${index + 1}`;
+    preview.appendChild(img);
+
+    if (index === coverIndex) {
+      const badge = document.createElement('span');
+      badge.className = 'cover-badge';
+      badge.textContent = 'ГОЛОВНЕ';
+      preview.appendChild(badge);
+    }
+
+    if (item.isNew) {
+      const badgeNew = document.createElement('span');
+      badgeNew.className = 'new-photo-badge';
+      badgeNew.textContent = 'нове';
+      preview.appendChild(badgeNew);
+    }
+
+    const removeBtn = document.createElement('button');
+    removeBtn.type = 'button';
+    removeBtn.className = 'preview-remove';
+    removeBtn.textContent = 'x';
+    removeBtn.title = 'Видалити фото';
+    removeBtn.setAttribute('aria-label', `Видалити фото ${index + 1}`);
+    removeBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      onRemove(index);
+    });
+    preview.appendChild(removeBtn);
+
+    preview.addEventListener('click', () => onSetCover(index));
+    preview.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        onSetCover(index);
+      }
+    });
+
+    container.appendChild(preview);
+  });
+}
+
+// Cover index after removing the photo at removedIndex.
+function coverAfterRemove(coverIndex, removedIndex, remainingCount) {
+  if (remainingCount <= 0) return 0;
+  if (removedIndex < coverIndex) return coverIndex - 1;
+  if (removedIndex === coverIndex) return Math.min(coverIndex, remainingCount - 1);
+  return coverIndex;
+}
+
+// ===== Upload: new product =====
 (function () {
   const MULTI_UPLOAD_URL = `${API_BASE}/admin/products/upload`;
   console.log('[admin] API base:', API_BASE);
@@ -20,10 +174,6 @@ const ENABLE_LEGACY_UPLOAD_FALLBACK = window.__ENABLE_LEGACY_UPLOAD_FALLBACK__ =
     let sku = '';
     for (let i = 0; i < 5; i += 1) sku += alphabet[Math.floor(Math.random() * alphabet.length)];
     return `Rk-${sku}`;
-  };
-
-  const revokeObjectURLSafe = (url) => {
-    try { URL.revokeObjectURL(url); } catch {}
   };
 
   const pickBtn = document.getElementById('product-pick-files');
@@ -42,14 +192,19 @@ const ENABLE_LEGACY_UPLOAD_FALLBACK = window.__ENABLE_LEGACY_UPLOAD_FALLBACK__ =
   const salePriceInput = document.getElementById('product-sale-price');
   const typeInput = document.getElementById('product-type');
   const sizeInput = document.getElementById('product-size');
+  const notesInput = document.getElementById('product-notes');
+  const notesCounter = document.getElementById('product-notes-counter');
 
   if (
     !pickBtn || !fileInput || !cardsGrid || !previewsGrid || !uploadBtn || !progressWrap ||
     !progressBar || !progressText || !resultBox || !skuInput || !categoryInput || !priceInput ||
-    !salePriceInput || !typeInput || !sizeInput
+    !salePriceInput || !typeInput || !sizeInput || !notesInput || !notesCounter
   ) {
     return;
   }
+
+  fillTypeSelect(typeInput);
+  const updateNotesCounter = bindNotesCounter(notesInput, notesCounter);
 
   const state = {
     files: [],
@@ -79,48 +234,39 @@ const ENABLE_LEGACY_UPLOAD_FALLBACK = window.__ENABLE_LEGACY_UPLOAD_FALLBACK__ =
     salePriceInput.value = '';
     typeInput.value = '';
     sizeInput.value = '';
+    notesInput.value = '';
+    updateNotesCounter();
     categoryInput.value = 'girls';
+    [priceInput, salePriceInput, typeInput, sizeInput, categoryInput].forEach((input) => {
+      delete input.dataset.touched;
+      input.classList.remove('input-error');
+    });
 
     renderPreviews();
     setUploadButtonState();
   };
 
-  const validate = () => {
-    let ok = true;
+  const markField = (input, valid) => {
+    input.classList.toggle('input-error', !valid);
+    return valid;
+  };
 
-    if (!skuInput.value.trim()) ok = false;
+  const validate = ({ highlight = false } = {}) => {
+    const checks = [
+      [priceInput, priceInput.value !== '' && Number(priceInput.value) >= 0],
+      [typeInput, !!typeInput.value.trim()],
+      [sizeInput, !!sizeInput.value.trim()],
+      [categoryInput, ['girls', 'boys'].includes(categoryInput.value)],
+    ];
 
-    if (!priceInput.value || Number(priceInput.value) < 0) {
-      priceInput.classList.add('input-error');
-      ok = false;
-    } else {
-      priceInput.classList.remove('input-error');
-    }
+    let ok = !!skuInput.value.trim() && state.files.length > 0;
+    checks.forEach(([input, valid]) => {
+      // Only show red borders after the user tried to upload or touched the field.
+      if (highlight || input.dataset.touched === 'true') markField(input, valid);
+      if (!valid) ok = false;
+    });
 
-    if (!typeInput.value.trim()) {
-      typeInput.classList.add('input-error');
-      ok = false;
-    } else {
-      typeInput.classList.remove('input-error');
-    }
-
-    if (!sizeInput.value.trim()) {
-      sizeInput.classList.add('input-error');
-      ok = false;
-    } else {
-      sizeInput.classList.remove('input-error');
-    }
-
-    if (!['girls', 'boys'].includes(categoryInput.value)) {
-      categoryInput.classList.add('input-error');
-      ok = false;
-    } else {
-      categoryInput.classList.remove('input-error');
-    }
-
-    if (!state.files.length) ok = false;
     state.coverIndex = parseCoverIndex(state.coverIndex, state.files.length || 1);
-
     return ok;
   };
 
@@ -128,78 +274,25 @@ const ENABLE_LEGACY_UPLOAD_FALLBACK = window.__ENABLE_LEGACY_UPLOAD_FALLBACK__ =
     uploadBtn.disabled = !validate();
   };
 
-  const renderPreviews = () => {
-    previewsGrid.innerHTML = '';
-
-    state.files.forEach((item, index) => {
-      const preview = document.createElement('button');
-      preview.type = 'button';
-      preview.className = 'product-preview-item';
-      if (index === state.coverIndex) preview.classList.add('is-cover');
-      preview.title = 'Set as cover';
-      preview.setAttribute('aria-label', `Preview ${index + 1}`);
-
-      const img = document.createElement('img');
-      img.src = item.objectURL;
-      img.alt = item.file.name || `image-${index + 1}`;
-
-      const removeBtn = document.createElement('button');
-      removeBtn.type = 'button';
-      removeBtn.className = 'preview-remove';
-      removeBtn.textContent = 'x';
-      removeBtn.title = 'Remove image';
-      removeBtn.setAttribute('aria-label', `Remove image ${index + 1}`);
-
-      removeBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const removed = state.files.splice(index, 1)[0];
-        if (removed?.objectURL) revokeObjectURLSafe(removed.objectURL);
-
-        if (state.coverIndex >= state.files.length) {
-          state.coverIndex = Math.max(0, state.files.length - 1);
-        }
-
-        renderPreviews();
-        setUploadButtonState();
-      });
-
-      preview.addEventListener('click', () => {
+  function renderPreviews() {
+    renderPhotoPreviews({
+      container: previewsGrid,
+      items: state.files.map((item) => ({ src: item.objectURL, label: item.file.name })),
+      coverIndex: state.coverIndex,
+      onSetCover: (index) => {
         state.coverIndex = index;
         renderPreviews();
         setUploadButtonState();
-      });
-
-      preview.appendChild(img);
-
-      if (index === state.coverIndex) {
-        const badge = document.createElement('span');
-        badge.className = 'cover-badge';
-        badge.textContent = 'COVER';
-        preview.appendChild(badge);
-      }
-
-      preview.appendChild(removeBtn);
-      previewsGrid.appendChild(preview);
+      },
+      onRemove: (index) => {
+        const removed = state.files.splice(index, 1)[0];
+        if (removed?.objectURL) revokeObjectURLSafe(removed.objectURL);
+        state.coverIndex = coverAfterRemove(state.coverIndex, index, state.files.length);
+        renderPreviews();
+        setUploadButtonState();
+      },
     });
-  };
-
-  const compressImageSafe = async (file) => {
-    if (typeof imageCompression !== 'function') return file;
-
-    const options = {
-      maxSizeMB: 1,
-      maxWidthOrHeight: 2000,
-      useWebWorker: true,
-    };
-
-    try {
-      const compressed = await imageCompression(file, options);
-      return new File([compressed], file.name, { type: compressed.type || file.type });
-    } catch (err) {
-      console.error('Compression error:', err);
-      return file;
-    }
-  };
+  }
 
   const requestWithProgress = ({ url, payload, onProgress }) => new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
@@ -235,6 +328,15 @@ const ENABLE_LEGACY_UPLOAD_FALLBACK = window.__ENABLE_LEGACY_UPLOAD_FALLBACK__ =
     xhr.send(payload);
   });
 
+  const appendCommonFields = (form) => {
+    form.append('price', String(Number(priceInput.value)));
+    form.append('salePrice', salePriceInput.value.trim());
+    form.append('type', typeInput.value.trim());
+    form.append('size', sizeInput.value.trim());
+    form.append('category', categoryInput.value);
+    form.append('notes', notesInput.value.trim());
+  };
+
   const buildMultiFormData = () => {
     const form = new FormData();
 
@@ -243,11 +345,7 @@ const ENABLE_LEGACY_UPLOAD_FALLBACK = window.__ENABLE_LEGACY_UPLOAD_FALLBACK__ =
     });
 
     form.append('sku', skuInput.value.trim());
-    form.append('price', String(Number(priceInput.value)));
-    form.append('salePrice', salePriceInput.value.trim());
-    form.append('type', typeInput.value.trim());
-    form.append('size', sizeInput.value.trim());
-    form.append('category', categoryInput.value);
+    appendCommonFields(form);
     form.append('coverIndex', String(state.coverIndex));
 
     return form;
@@ -257,11 +355,7 @@ const ENABLE_LEGACY_UPLOAD_FALLBACK = window.__ENABLE_LEGACY_UPLOAD_FALLBACK__ =
     const form = new FormData();
     form.append('file', file, file.name);
     form.append('sku', sku);
-    form.append('price', String(Number(priceInput.value)));
-    form.append('salePrice', salePriceInput.value.trim());
-    form.append('type', typeInput.value.trim());
-    form.append('size', sizeInput.value.trim());
-    form.append('category', categoryInput.value);
+    appendCommonFields(form);
     return form;
   };
 
@@ -289,8 +383,8 @@ const ENABLE_LEGACY_UPLOAD_FALLBACK = window.__ENABLE_LEGACY_UPLOAD_FALLBACK__ =
   };
 
   const handleUpload = async () => {
-    if (!validate()) {
-      alert('Fill required fields and add at least one image.');
+    if (!validate({ highlight: true })) {
+      alert('Заповніть обов’язкові поля (ціна, тип, розмір) і додайте хоча б одне фото.');
       return;
     }
 
@@ -315,7 +409,7 @@ const ENABLE_LEGACY_UPLOAD_FALLBACK = window.__ENABLE_LEGACY_UPLOAD_FALLBACK__ =
 
       progressBar.value = 100;
       progressText.textContent = '100%';
-      showResult('Uploaded successfully as one product.');
+      showResult(`Товар ${skuInput.value.trim()} успішно завантажено!`);
       resetDraft({ regenerateSku: true });
     } catch (err) {
       if (err?.status === 404 && ENABLE_LEGACY_UPLOAD_FALLBACK) {
@@ -324,24 +418,25 @@ const ENABLE_LEGACY_UPLOAD_FALLBACK = window.__ENABLE_LEGACY_UPLOAD_FALLBACK__ =
           await uploadLegacySequential();
           progressBar.value = 100;
           progressText.textContent = '100%';
-          showResult('Uploaded via legacy endpoint as separate items (server is not updated yet).');
+          showResult('Завантажено через старий маршрут окремими товарами (сервер ще не оновлено).');
           resetDraft({ regenerateSku: true });
           return;
         } catch (legacyErr) {
           const msg = legacyErr?.message || `HTTP ${legacyErr?.status || 'unknown'}`;
           console.error('[upload] legacy fallback failed:', legacyErr);
-          alert(`Upload failed (legacy fallback): ${msg}`);
+          alert(`Помилка завантаження (старий маршрут): ${msg}`);
           return;
         }
       }
 
       const notFoundHint = err?.status === 404
-        ? 'Upload route not found: /api/admin/products/upload. Check backend deploy and route mount.'
+        ? 'Маршрут завантаження не знайдено: /api/admin/products/upload. Перевірте, чи оновлено сервер.'
         : null;
       const msg = notFoundHint || err?.message || `HTTP ${err?.status || 'unknown'}`;
       console.error('[upload] failed:', err);
-      alert(`Upload failed: ${msg}`);
+      alert(`Помилка завантаження: ${msg}`);
     } finally {
+      progressWrap.hidden = true;
       cardsGrid.setAttribute('aria-busy', 'false');
       pickBtn.disabled = false;
       setUploadButtonState();
@@ -352,23 +447,32 @@ const ENABLE_LEGACY_UPLOAD_FALLBACK = window.__ENABLE_LEGACY_UPLOAD_FALLBACK__ =
 
   fileInput.addEventListener('change', async () => {
     const files = Array.from(fileInput.files || []).filter((file) => file.type.startsWith('image/'));
+    fileInput.value = '';
     if (!files.length) return;
 
-    for (const file of files) {
-      const processed = await compressImageSafe(file);
-      const objectURL = URL.createObjectURL(processed);
-      state.files.push({ file: processed, objectURL });
+    pickBtn.disabled = true;
+    try {
+      for (const file of files) {
+        const processed = await compressImageSafe(file);
+        const objectURL = URL.createObjectURL(processed);
+        state.files.push({ file: processed, objectURL });
+      }
+    } finally {
+      pickBtn.disabled = false;
     }
 
     if (state.coverIndex >= state.files.length) state.coverIndex = 0;
     renderPreviews();
     setUploadButtonState();
-    fileInput.value = '';
   });
 
   [priceInput, salePriceInput, typeInput, sizeInput, categoryInput].forEach((input) => {
-    input.addEventListener('input', setUploadButtonState);
-    input.addEventListener('change', setUploadButtonState);
+    const touch = () => {
+      input.dataset.touched = 'true';
+      setUploadButtonState();
+    };
+    input.addEventListener('input', touch);
+    input.addEventListener('change', touch);
   });
 
   uploadBtn.addEventListener('click', handleUpload);
@@ -378,6 +482,7 @@ const ENABLE_LEGACY_UPLOAD_FALLBACK = window.__ENABLE_LEGACY_UPLOAD_FALLBACK__ =
   setUploadButtonState();
 })();
 
+// ===== Search by SKU + full edit =====
 (function () {
   const API = API_BASE;
 
@@ -388,77 +493,225 @@ const ENABLE_LEGACY_UPLOAD_FALLBACK = window.__ENABLE_LEGACY_UPLOAD_FALLBACK__ =
 
   if (!searchForm || !searchInput || !resultBox || !template) return;
 
+  let messageTimer = null;
+  let activeEditor = null;
+
+  const clearEditor = () => {
+    if (activeEditor) activeEditor.destroy();
+    activeEditor = null;
+  };
+
   const showMessage = (msg) => {
-    resultBox.innerHTML = `<div class="saved-changes">${msg}</div>`;
-    setTimeout(() => {
-      resultBox.innerHTML = '';
+    clearEditor();
+    clearTimeout(messageTimer);
+    resultBox.innerHTML = '';
+    const box = document.createElement('div');
+    box.className = 'saved-changes';
+    box.textContent = msg;
+    resultBox.appendChild(box);
+    messageTimer = setTimeout(() => {
+      if (resultBox.contains(box)) resultBox.innerHTML = '';
     }, 5000);
   };
 
-  const pickPreviewImage = (data) => {
-    if (data?.imageUrl) return data.imageUrl;
-    if (Array.isArray(data?.images) && data.images.length) {
-      const idx = Number.isInteger(data.coverIndex) ? data.coverIndex : 0;
-      return data.images[idx] || data.images[0];
+  const readError = async (res) => {
+    try {
+      const body = await res.json();
+      return body?.message || `HTTP ${res.status}`;
+    } catch {
+      return `HTTP ${res.status}`;
     }
-    return '';
   };
 
   const renderCard = (data) => {
+    clearEditor();
+    clearTimeout(messageTimer);
     resultBox.innerHTML = '';
+
     const clone = template.content.cloneNode(true);
     const card = clone.querySelector('.photo-card');
 
-    card.querySelector('img.photo-thumb').src = pickPreviewImage(data);
-    card.querySelector('input[name="sku"]').value = data.sku;
-    card.querySelector('input[name="price"]').value = data.price;
-    card.querySelector('input[name="salePrice"]').value = data.salePrice || '';
-    card.querySelector('input[name="type"]').value = data.type;
-    card.querySelector('input[name="size"]').value = data.size;
-    card.querySelector('input[name="category"]').value = data.category;
+    const els = {
+      previews: card.querySelector('.edit-previews-grid'),
+      addPhotosBtn: card.querySelector('.btn-add-photos'),
+      fileInput: card.querySelector('.edit-file-input'),
+      sku: card.querySelector('input[name="sku"]'),
+      category: card.querySelector('select[name="category"]'),
+      price: card.querySelector('input[name="price"]'),
+      salePrice: card.querySelector('input[name="salePrice"]'),
+      type: card.querySelector('select[name="type"]'),
+      size: card.querySelector('input[name="size"]'),
+      notes: card.querySelector('textarea[name="notes"]'),
+      notesCounter: card.querySelector('.notes-counter'),
+      saveBtn: card.querySelector('.btn-save'),
+      deleteBtn: card.querySelector('.btn-delete'),
+      status: card.querySelector('.edit-status'),
+    };
 
-    card.querySelector('.btn-save').addEventListener('click', async () => {
-      const updated = {
-        price: Number(card.querySelector('input[name="price"]').value),
-        salePrice: Number(card.querySelector('input[name="salePrice"]').value) || null,
-        type: card.querySelector('input[name="type"]').value.trim(),
-        size: card.querySelector('input[name="size"]').value.trim(),
-      };
+    const existingImages = Array.isArray(data.images) && data.images.length
+      ? data.images.filter(Boolean)
+      : (data.imageUrl ? [data.imageUrl] : []);
 
+    // Photos in display order: existing first, then newly added.
+    const state = {
+      photos: existingImages.map((url) => ({ kind: 'existing', url, src: url })),
+      coverIndex: Number.isInteger(data.coverIndex) && data.coverIndex < existingImages.length
+        ? data.coverIndex
+        : 0,
+      busy: false,
+    };
+
+    els.sku.value = data.sku || '';
+    els.category.value = data.category === 'boys' ? 'boys' : 'girls';
+    els.price.value = data.price ?? '';
+    els.salePrice.value = data.salePrice ?? '';
+    fillTypeSelect(els.type, data.type || '');
+    els.size.value = data.size || '';
+    els.notes.value = data.notes || '';
+    bindNotesCounter(els.notes, els.notesCounter);
+
+    const setStatus = (text, kind = '') => {
+      els.status.textContent = text;
+      els.status.className = `edit-status${kind ? ` is-${kind}` : ''}`;
+    };
+
+    const setBusy = (busy) => {
+      state.busy = busy;
+      [els.saveBtn, els.deleteBtn, els.addPhotosBtn].forEach((btn) => { btn.disabled = busy; });
+      card.setAttribute('aria-busy', busy ? 'true' : 'false');
+    };
+
+    const renderPhotos = () => {
+      renderPhotoPreviews({
+        container: els.previews,
+        items: state.photos.map((photo) => ({ src: photo.src, isNew: photo.kind === 'new' })),
+        coverIndex: state.coverIndex,
+        onSetCover: (index) => {
+          state.coverIndex = index;
+          renderPhotos();
+        },
+        onRemove: (index) => {
+          if (state.photos.length === 1) {
+            setStatus('Товар має мати хоча б одне фото. Спочатку додайте нове.', 'error');
+            return;
+          }
+          const [removed] = state.photos.splice(index, 1);
+          if (removed?.kind === 'new') revokeObjectURLSafe(removed.src);
+          state.coverIndex = coverAfterRemove(state.coverIndex, index, state.photos.length);
+          renderPhotos();
+        },
+      });
+    };
+
+    const validate = () => {
+      const checks = [
+        [els.price, els.price.value !== '' && Number(els.price.value) >= 0],
+        [els.salePrice, els.salePrice.value === '' || Number(els.salePrice.value) >= 0],
+        [els.type, !!els.type.value.trim()],
+        [els.size, !!els.size.value.trim()],
+      ];
+      let ok = true;
+      checks.forEach(([input, valid]) => {
+        input.classList.toggle('input-error', !valid);
+        if (!valid) ok = false;
+      });
+      if (!state.photos.length) ok = false;
+      return ok;
+    };
+
+    els.addPhotosBtn.addEventListener('click', () => els.fileInput.click());
+
+    els.fileInput.addEventListener('change', async () => {
+      const files = Array.from(els.fileInput.files || []).filter((file) => file.type.startsWith('image/'));
+      els.fileInput.value = '';
+      if (!files.length) return;
+
+      setBusy(true);
+      setStatus('Готую фото…');
       try {
-        const res = await fetch(`${API}/admin/update/${data._id}`, {
-          method: 'PATCH',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(updated),
-        });
+        for (const file of files) {
+          const processed = await compressImageSafe(file);
+          state.photos.push({ kind: 'new', file: processed, src: URL.createObjectURL(processed) });
+        }
+        setStatus('Фото додано. Не забудьте натиснути «Зберегти».');
+      } finally {
+        setBusy(false);
+      }
+      renderPhotos();
+    });
 
-        if (!res.ok) throw new Error('Could not update data');
-        searchInput.value = '';
-        showMessage('Saved');
+    els.saveBtn.addEventListener('click', async () => {
+      if (state.busy) return;
+      if (!validate()) {
+        setStatus('Перевірте поля, виділені червоним.', 'error');
+        return;
+      }
+
+      const form = new FormData();
+      form.append('price', String(Number(els.price.value)));
+      form.append('salePrice', els.salePrice.value.trim());
+      form.append('type', els.type.value.trim());
+      form.append('size', els.size.value.trim());
+      form.append('category', els.category.value);
+      form.append('notes', els.notes.value.trim());
+      form.append('keepImages', JSON.stringify(
+        state.photos.filter((photo) => photo.kind === 'existing').map((photo) => photo.url)
+      ));
+      state.photos
+        .filter((photo) => photo.kind === 'new')
+        .forEach((photo) => form.append('images', photo.file, photo.file.name));
+      form.append('coverIndex', String(state.coverIndex));
+
+      setBusy(true);
+      setStatus('Зберігаю…');
+      try {
+        const res = await fetch(`${API}/admin/products/${data._id}`, {
+          method: 'PATCH',
+          body: form,
+        });
+        if (!res.ok) throw new Error(await readError(res));
+
+        const body = await res.json();
+        renderCard(body.product || data);
+        activeEditor?.setStatus('Збережено ✓', 'success');
       } catch (err) {
         console.error(err);
-        showMessage('Save error');
+        setStatus(`Помилка збереження: ${err.message}`, 'error');
+        setBusy(false);
       }
     });
 
-    card.querySelector('.btn-delete').addEventListener('click', async () => {
-      if (!confirm('Delete this item?')) return;
+    els.deleteBtn.addEventListener('click', async () => {
+      if (state.busy) return;
+      if (!confirm(`Видалити товар ${data.sku} разом з усіма фото?`)) return;
 
+      setBusy(true);
+      setStatus('Видаляю…');
       try {
         const res = await fetch(`${API}/admin/delete/${data._id}`, {
           method: 'DELETE',
         });
-
-        if (!res.ok) throw new Error('Could not delete');
+        if (!res.ok) throw new Error(await readError(res));
         searchInput.value = '';
-        showMessage('Deleted');
+        showMessage(`Товар ${data.sku} видалено`);
       } catch (err) {
         console.error(err);
-        showMessage('Delete error');
+        setStatus(`Помилка видалення: ${err.message}`, 'error');
+        setBusy(false);
       }
     });
 
+    renderPhotos();
     resultBox.appendChild(clone);
+
+    activeEditor = {
+      setStatus,
+      destroy: () => {
+        state.photos
+          .filter((photo) => photo.kind === 'new')
+          .forEach((photo) => revokeObjectURLSafe(photo.src));
+      },
+    };
   };
 
   searchForm.addEventListener('submit', async (e) => {
@@ -466,12 +719,14 @@ const ENABLE_LEGACY_UPLOAD_FALLBACK = window.__ENABLE_LEGACY_UPLOAD_FALLBACK__ =
     const sku = searchInput.value.trim();
     if (!sku) return;
 
-    resultBox.innerHTML = '<div class="not-found">Searching...</div>';
+    clearEditor();
+    resultBox.innerHTML = '<div class="not-found">Шукаю…</div>';
 
     try {
       const res = await fetch(`${API}/admin/find/${encodeURIComponent(sku)}`);
       if (res.status === 404) {
-        return showMessage('Not found');
+        showMessage('Товар не знайдено');
+        return;
       }
       if (!res.ok) throw new Error('Request error');
 
@@ -479,7 +734,7 @@ const ENABLE_LEGACY_UPLOAD_FALLBACK = window.__ENABLE_LEGACY_UPLOAD_FALLBACK__ =
       renderCard(data);
     } catch (err) {
       console.error(err);
-      showMessage('Search error');
+      showMessage('Помилка пошуку');
     }
   });
 })();
