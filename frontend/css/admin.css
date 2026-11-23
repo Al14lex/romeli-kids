@@ -522,3 +522,70 @@ progress::-moz-progress-bar {
     opacity: .6;
     cursor: wait;
 }
+
+/* ===== Вхід ===== */
+.admin-main[hidden],
+.admin-login[hidden] {
+    display: none;
+}
+
+.admin-login {
+    max-width: 360px;
+    margin: 40px auto;
+    padding: 24px 20px;
+    border: 3px solid var(--clr-caramel);
+    border-radius: 10px;
+    text-align: center;
+}
+
+.admin-login h2 {
+    margin: 0 0 18px;
+    font-size: 26px;
+    color: #6f5c52;
+}
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.login-form input {
+    padding: 10px 12px;
+    border: 1px solid #c4a88a;
+    border-radius: 8px;
+    font-size: 16px;
+}
+
+.login-form button {
+    padding: 10px;
+    background-color: #c48d62;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.login-form button:disabled {
+    opacity: .6;
+    cursor: wait;
+}
+
+.login-error {
+    min-height: 1.4em;
+    margin: 12px 0 0;
+    color: #a63838;
+    font-weight: 600;
+}
+
+.admin-toolbar {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 12px;
+}
+
+.btn-logout {
+    padding: 6px 14px;
+    font-size: 14px;
+}

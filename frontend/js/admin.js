@@ -1,14 +1,12 @@
-const RENDER_API_BASE = 'https://romeli-kids.onrender.com/api';
+import {
+  resolveApiBase,
+  getToken,
+  clearToken,
+  authHeaders,
+  login,
+} from './admin-auth.js';
 
-function resolveApiBase() {
-  const host = window.location.hostname;
-  if (host.endsWith('vercel.app')) {
-    return RENDER_API_BASE;
-  }
-  return '/api';
-}
-
-const API_BASE = window.__API_BASE__ || resolveApiBase();
+const API_BASE = resolveApiBase();
 const ENABLE_LEGACY_UPLOAD_FALLBACK = window.__ENABLE_LEGACY_UPLOAD_FALLBACK__ === true;
 const NOTES_MAX_LENGTH = 300;
 
@@ -33,6 +31,57 @@ const PRODUCT_TYPES = [
   'Obuwie',
   'Inne',
 ];
+
+// ===== Login gate =====
+const loginSection = document.getElementById('admin-login');
+const adminMain = document.getElementById('admin-main');
+
+function showLogin(message = '') {
+  if (adminMain) adminMain.hidden = true;
+  if (loginSection) loginSection.hidden = false;
+  const errorBox = document.getElementById('login-error');
+  if (errorBox) errorBox.textContent = message;
+  document.getElementById('login-password')?.focus();
+}
+
+function showAdmin() {
+  if (loginSection) loginSection.hidden = true;
+  if (adminMain) adminMain.hidden = false;
+}
+
+// Called when the server says the token is missing or expired.
+function handleUnauthorized() {
+  clearToken();
+  showLogin('Сесія закінчилась. Увійдіть знову.');
+}
+
+(function initLoginGate() {
+  const form = document.getElementById('login-form');
+  const passwordInput = document.getElementById('login-password');
+  const submitBtn = document.getElementById('login-submit');
+  const logoutBtn = document.getElementById('logout-btn');
+
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    submitBtn.disabled = true;
+    const result = await login(passwordInput.value);
+    submitBtn.disabled = false;
+    if (result.ok) {
+      passwordInput.value = '';
+      showAdmin();
+    } else {
+      showLogin(result.message);
+    }
+  });
+
+  logoutBtn?.addEventListener('click', () => {
+    clearToken();
+    showLogin('Ви вийшли з адмінки.');
+  });
+
+  if (getToken()) showAdmin();
+  else showLogin();
+})();
 
 // ===== Shared helpers =====
 
@@ -297,6 +346,7 @@ function coverAfterRemove(coverIndex, removedIndex, remainingCount) {
   const requestWithProgress = ({ url, payload, onProgress }) => new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
     xhr.open('POST', url);
+    Object.entries(authHeaders()).forEach(([name, value]) => xhr.setRequestHeader(name, value));
 
     xhr.upload.addEventListener('progress', (e) => {
       if (e.lengthComputable && typeof onProgress === 'function') {
@@ -320,6 +370,8 @@ function coverAfterRemove(coverIndex, removedIndex, remainingCount) {
         resolve(body || {});
         return;
       }
+
+      if (xhr.status === 401) handleUnauthorized();
 
       const message = body?.message || xhr.responseText || `HTTP ${xhr.status}`;
       reject({ status: xhr.status, message });
@@ -412,6 +464,7 @@ function coverAfterRemove(coverIndex, removedIndex, remainingCount) {
       showResult(`Товар ${skuInput.value.trim()} успішно завантажено!`);
       resetDraft({ regenerateSku: true });
     } catch (err) {
+      if (err?.status === 401) return; // login screen is already shown
       if (err?.status === 404 && ENABLE_LEGACY_UPLOAD_FALLBACK) {
         console.warn('[upload] /admin/products/upload not found; falling back to legacy category upload route.');
         try {
@@ -667,8 +720,13 @@ function coverAfterRemove(coverIndex, removedIndex, remainingCount) {
       try {
         const res = await fetch(`${API}/admin/products/${data._id}`, {
           method: 'PATCH',
+          headers: authHeaders(),
           body: form,
         });
+        if (res.status === 401) {
+          handleUnauthorized();
+          return;
+        }
         if (!res.ok) throw new Error(await readError(res));
 
         const body = await res.json();
@@ -690,7 +748,12 @@ function coverAfterRemove(coverIndex, removedIndex, remainingCount) {
       try {
         const res = await fetch(`${API}/admin/delete/${data._id}`, {
           method: 'DELETE',
+          headers: authHeaders(),
         });
+        if (res.status === 401) {
+          handleUnauthorized();
+          return;
+        }
         if (!res.ok) throw new Error(await readError(res));
         searchInput.value = '';
         showMessage(`Товар ${data.sku} видалено`);
@@ -723,7 +786,14 @@ function coverAfterRemove(coverIndex, removedIndex, remainingCount) {
     resultBox.innerHTML = '<div class="not-found">Шукаю…</div>';
 
     try {
-      const res = await fetch(`${API}/admin/find/${encodeURIComponent(sku)}`);
+      const res = await fetch(`${API}/admin/find/${encodeURIComponent(sku)}`, {
+        headers: authHeaders(),
+      });
+      if (res.status === 401) {
+        resultBox.innerHTML = '';
+        handleUnauthorized();
+        return;
+      }
       if (res.status === 404) {
         showMessage('Товар не знайдено');
         return;
