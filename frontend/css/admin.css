@@ -76,7 +76,7 @@
 
 /* картка (редагована версія) */
 .editable-card {
-    width: 300px;
+    width: min(100%, 520px);
     margin-left: auto;
     margin-right: auto;
 }
@@ -109,8 +109,12 @@ display: flex;
     
 }
 
-.editable-card input {
+.editable-card input,
+.editable-card select,
+.editable-card textarea {
     width: 100%;
+    font-family: inherit;
+    color: inherit;
         font-size: 16px;
         background: #fff;
         border: 1px solid #e7ded2;
@@ -119,7 +123,9 @@ display: flex;
         box-shadow: var(--shadow-inner);
         transition: border-color .2s ease, box-shadow .2s ease;
 }
-.editable-card input:focus{
+.editable-card input:focus,
+.editable-card select:focus,
+.editable-card textarea:focus{
     outline: none;
     border-color: var(--clr-caramel);
     box-shadow: 0 0 0 4px rgba(211, 165, 139, 0.25);
@@ -366,6 +372,11 @@ display: flex;
 }
 
 /* ===== Прогрес-бар ===== */
+.upload-progress[hidden],
+.upload-result[hidden] {
+    display: none;
+}
+
 .upload-progress {
     display: flex;
     align-items: center;
@@ -440,4 +451,74 @@ progress::-moz-progress-bar {
 [aria-busy="true"] {
     opacity: .7;
     pointer-events: none;
+}
+/* ===== Редагування: фото, нотатки, статус ===== */
+.edit-photos {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 5px 0;
+}
+
+.edit-photos .product-previews-grid {
+    width: 100%;
+    margin-top: 0;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+}
+
+.editable-card .label-wide {
+    width: 100%;
+}
+
+.editable-card textarea,
+#product-notes {
+    resize: vertical;
+    min-height: 70px;
+    line-height: 1.4;
+}
+
+.notes-counter {
+    align-self: flex-end;
+    font-size: 12px;
+    color: #8a7a6e;
+    letter-spacing: 0;
+}
+
+.notes-counter.is-full {
+    color: #c24c4c;
+    font-weight: 600;
+}
+
+.edit-status {
+    width: 100%;
+    min-height: 1.4em;
+    margin: 8px 0 0;
+    font-size: 15px;
+    font-weight: 600;
+    color: #6f5c52;
+}
+
+.edit-status.is-success {
+    color: #3d7548;
+}
+
+.edit-status.is-error {
+    color: #a63838;
+}
+
+.new-photo-badge {
+    position: absolute;
+    bottom: 6px;
+    left: 6px;
+    background: #c48d62;
+    color: #fff;
+    font-size: 11px;
+    padding: 2px 6px;
+    border-radius: 999px;
+}
+
+.card-actions button:disabled {
+    opacity: .6;
+    cursor: wait;
 }

@@ -544,3 +544,105 @@ img.lazy.is-loaded {
     color: #3E3E3E;
     cursor: pointer;
 }
+
+/* ===== NOTES (opis produktu) ===== */
+.product-notes-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+}
+
+.product-notes {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.35;
+    color: #5b4a3d;
+    white-space: pre-line;
+    overflow-wrap: anywhere;
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    cursor: default;
+}
+
+.product-notes-wrap:has(.product-notes-more:not([hidden])) .product-notes {
+    cursor: pointer;
+}
+
+.product-notes-more {
+    border: none;
+    background: transparent;
+    padding: 2px 4px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--clr-caramel);
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.product-notes-more[hidden] {
+    display: none;
+}
+
+.notes-modal {
+    position: fixed;
+    inset: 0;
+    background: #4b3a2da6;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+    padding: 16px;
+}
+
+.notes-modal.hidden {
+    display: none;
+}
+
+.notes-modal-content {
+    position: relative;
+    background: var(--clr-beige);
+    border-radius: 12px;
+    padding: 28px 22px 22px;
+    width: min(480px, 100%);
+    max-height: 80vh;
+    overflow-y: auto;
+    text-align: left;
+    box-shadow: 0 10px 30px rgba(62, 62, 62, 0.2);
+}
+
+.notes-modal-close {
+    position: absolute;
+    top: 4px;
+    right: 12px;
+    font-size: 36px;
+    line-height: 1;
+    border: none;
+    background: transparent;
+    color: #3E3E3E;
+    cursor: pointer;
+}
+
+.notes-modal-title {
+    margin: 0 30px 4px 0;
+    font-size: 20px;
+    color: var(--clr-caramel);
+}
+
+.notes-modal-sku {
+    margin: 0 0 12px;
+    font-size: 13px;
+    color: #7a6a5c;
+}
+
+.notes-modal-text {
+    margin: 0;
+    font-size: 16px;
+    line-height: 1.5;
+    color: #3E3E3E;
+    white-space: pre-line;
+    overflow-wrap: anywhere;
+}

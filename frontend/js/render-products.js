@@ -27,6 +27,15 @@ function normalizeCoverIndex(rawCoverIndex, totalImages) {
   return index;
 }
 
+function escapeHtml(value) {
+  return String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 function capitalize(str) {
   if (!str) return '';
   return str.charAt(0).toUpperCase() + str.slice(1);
@@ -151,8 +160,16 @@ async function renderProducts() {
 
       const hasSalePrice = item.salePrice !== null && item.salePrice !== undefined && item.salePrice !== '';
       const priceHtml = hasSalePrice
-        ? `<p class="product-price"><span class="old-price">${item.price} zl</span><span class="sale-price">${item.salePrice} zl</span></p>`
-        : `<p class="product-price">Cena: ${item.price} zl</p>`;
+        ? `<p class="product-price"><span class="old-price">${escapeHtml(item.price)} zł</span><span class="sale-price">${escapeHtml(item.salePrice)} zł</span></p>`
+        : `<p class="product-price">Cena: ${escapeHtml(item.price)} zł</p>`;
+
+      const notes = typeof item.notes === 'string' ? item.notes.trim() : '';
+      const notesHtml = notes
+        ? `<div class="product-notes-wrap">
+            <p class="product-notes">${escapeHtml(notes)}</p>
+            <button type="button" class="product-notes-more" hidden>Pokaż więcej</button>
+          </div>`
+        : '';
 
       const card = document.createElement('article');
       card.className = 'product-card';
@@ -169,13 +186,14 @@ async function renderProducts() {
       card.innerHTML = `
         ${badgeNew}
         <div class="product-image">
-          <img class="lazy" data-src="${coverImage}" alt="${item.type || ''}" />
-          <span class="sku-badge">${item.sku || ''}</span>
+          <img class="lazy" data-src="${escapeHtml(coverImage)}" alt="${escapeHtml(item.type || '')}" />
+          <span class="sku-badge">${escapeHtml(item.sku || '')}</span>
         </div>
         <div class="product-meta">
           ${priceHtml}
-          <h3 class="product-title">${capitalize(item.type || '')}</h3>
-          <p class="product-size">Rozmiar: ${item.size || ''}</p>
+          <h3 class="product-title">${escapeHtml(capitalize(item.type || ''))}</h3>
+          <p class="product-size">Rozmiar: ${escapeHtml(item.size || '')}</p>
+          ${notesHtml}
         </div>
       `;
 
@@ -189,14 +207,88 @@ async function renderProducts() {
         skuBadge.setAttribute('aria-label', `Copy SKU ${skuText}`);
       }
 
+      if (notes) {
+        card.dataset.notes = notes;
+        card.dataset.notesTitle = capitalize(item.type || '');
+      }
+
       grid.appendChild(card);
     });
 
     lazyLoadImages();
+    updateNotesToggles();
   } catch (err) {
     console.error('Product loading error:', err);
-    grid.innerHTML = "<p class='error'>Nie udalo sie zaladowac produktow.</p>";
+    grid.innerHTML = "<p class='error'>Nie udało się załadować produktów.</p>";
   }
+}
+
+// Show "Pokaż więcej" only for notes that are cut off after 2 lines.
+function updateNotesToggles() {
+  document.querySelectorAll('.product-notes').forEach((notesEl) => {
+    const button = notesEl.parentElement?.querySelector('.product-notes-more');
+    if (!button) return;
+    button.hidden = notesEl.scrollHeight <= notesEl.clientHeight + 1;
+  });
+}
+
+function initNotesModal() {
+  const modal = document.createElement('div');
+  modal.className = 'notes-modal hidden';
+  modal.setAttribute('role', 'dialog');
+  modal.setAttribute('aria-modal', 'true');
+  modal.innerHTML = `
+    <div class="notes-modal-content">
+      <button type="button" class="notes-modal-close" aria-label="Zamknij">&times;</button>
+      <h3 class="notes-modal-title"></h3>
+      <p class="notes-modal-sku"></p>
+      <p class="notes-modal-text"></p>
+    </div>
+  `;
+  document.body.appendChild(modal);
+
+  const titleEl = modal.querySelector('.notes-modal-title');
+  const skuEl = modal.querySelector('.notes-modal-sku');
+  const textEl = modal.querySelector('.notes-modal-text');
+  const closeBtn = modal.querySelector('.notes-modal-close');
+
+  const close = () => {
+    modal.classList.add('hidden');
+    document.body.style.overflow = '';
+  };
+
+  const open = (card) => {
+    titleEl.textContent = card.dataset.notesTitle || '';
+    skuEl.textContent = card.dataset.sku || '';
+    textEl.textContent = card.dataset.notes || '';
+    modal.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+    closeBtn.focus();
+  };
+
+  document.body.addEventListener('click', (e) => {
+    const trigger = e.target.closest('.product-notes-more, .product-notes');
+    if (!trigger) return;
+    const card = trigger.closest('.product-card');
+    const button = card?.querySelector('.product-notes-more');
+    // Tapping the text opens the window only when it is actually cut off.
+    if (!card?.dataset.notes || (trigger.classList.contains('product-notes') && button?.hidden)) return;
+    open(card);
+  });
+
+  closeBtn.addEventListener('click', close);
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) close();
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !modal.classList.contains('hidden')) close();
+  });
+
+  let resizeTimer = null;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(updateNotesToggles, 150);
+  });
 }
 
 function initModalGallery() {
@@ -416,5 +508,6 @@ function initSkuCopy() {
 document.addEventListener('DOMContentLoaded', async () => {
   initSkuCopy();
   initModalGallery();
+  initNotesModal();
   await renderProducts();
 });

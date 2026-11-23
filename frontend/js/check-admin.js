@@ -30,7 +30,7 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       } else {
         attempts++;
-        alert(`Неправильний пароль. Спроба ${attempts} з ${MAX_ATTЕМPTS}.`);
+        alert(`Неправильний пароль. Спроба ${attempts} з ${MAX_ATTEMPTS}.`);
       }
     }
 
